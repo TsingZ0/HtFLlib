@@ -5,6 +5,8 @@ Standard federated learning (FL), e.g., [FedAvg](http://proceedings.mlr.press/v5
 
 Here, we only show the mnist dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my another repository [PFL-Non-IID](https://github.com/TsingZ0/PFL-Non-IID) for more help. 
 
+You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it tasks much effort. In this repository, you only need to configure `main.py` to supports model heterogeneity scenarios. 
+
 ## Data-free algorithms with code (updating)
   
 - **Local** — Each client trains its model locally without federation.
