@@ -1,9 +1,9 @@
 # General Federated Learning (GFL)
-Standard federated learning (FL), e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, each client can build its own model with a specific model architecture for specific local tasks. 
+Standard federated learning (FL), e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, each client can build its own model with a specific model architecture for a specific local task. 
 
 ## Scenarios and datasets
 
-Here, we only show the mnist dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my another repository [PFL-Non-IID](https://github.com/TsingZ0/PFL-Non-IID) for more help. 
+Here, we only show the MNIST dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my other repository [PFL-Non-IID](https://github.com/TsingZ0/PFL-Non-IID) for more help. 
 
 *You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it tasks much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
 
