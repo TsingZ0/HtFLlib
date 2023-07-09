@@ -46,7 +46,7 @@ class Client(object):
 
         head = nn.Linear(self.feature_dim, self.num_classes) # can be more personalized
         self.model = BaseHeadSplit(self.model, head).to(self.device)
-        print(f'Client {self.id}', which_model, self.model)
+        # print(f'Client {self.id}', which_model, self.model)
 
         # check BatchNorm
         self.has_BatchNorm = False
