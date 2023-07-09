@@ -12,6 +12,9 @@ from flcore.servers.serverproto import FedProto
 from flcore.servers.servergen import FedGen
 from flcore.servers.serverdistill import FedDistill
 from flcore.servers.serverlg import FedLG
+from flcore.servers.serverfml import FML
+from flcore.servers.serverkd import FedKD
+from flcore.servers.serverpcl import FedPCL
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
@@ -80,8 +83,8 @@ def run(args):
 
         elif args.model_family == "resnet18_cnn":
             args.models = [
-                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600).to(args.device)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
             ]
 
         else:
@@ -105,6 +108,15 @@ def run(args):
 
         elif args.algorithm == "FedLG":
             server = FedLG(args, i)
+
+        elif args.algorithm == "FML":
+            server = FML(args, i)
+
+        elif args.algorithm == "FedKD":
+            server = FedKD(args, i)
+
+        elif args.algorithm == "FedPCL":
+            server = FedPCL(args, i)
             
         else:
             raise NotImplementedError
@@ -179,6 +191,13 @@ if __name__ == "__main__":
     parser.add_argument('-glr', "--generator_learning_rate", type=float, default=0.005)
     parser.add_argument('-hd', "--hidden_dim", type=int, default=512)
     parser.add_argument('-se', "--server_epochs", type=int, default=1000)
+    # FML
+    parser.add_argument('-al', "--alpha", type=float, default=1.0)
+    parser.add_argument('-bt', "--beta", type=float, default=1.0)
+    # FedKD
+    parser.add_argument('-mlr', "--mentee_learning_rate", type=float, default=0.005)
+    parser.add_argument('-Ts', "--T_start", type=float, default=0.95)
+    parser.add_argument('-Te', "--T_end", type=float, default=0.98)
 
 
     args = parser.parse_args()
