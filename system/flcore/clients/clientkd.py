@@ -11,8 +11,7 @@ class clientKD(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
-        # self.mentee_learning_rate = args.mentee_learning_rate
-        self.mentee_learning_rate = args.local_learning_rate
+        self.mentee_learning_rate = args.mentee_learning_rate
 
         self.global_model = copy.deepcopy(args.global_model)
         
