@@ -11,7 +11,7 @@ from flcore.servers.serverlocal import Local
 from flcore.servers.serverproto import FedProto
 from flcore.servers.servergen import FedGen
 from flcore.servers.serverdistill import FedDistill
-from flcore.servers.serverlg import FedLG
+from flcore.servers.serverlg import LG_FedAvg
 from flcore.servers.serverfml import FML
 from flcore.servers.serverkd import FedKD
 from flcore.servers.serverpcl import FedPCL
@@ -106,8 +106,8 @@ def run(args):
         elif args.algorithm == "FedDistill":
             server = FedDistill(args, i)
 
-        elif args.algorithm == "FedLG":
-            server = FedLG(args, i)
+        elif args.algorithm == "LG-FedAvg":
+            server = LG_FedAvg(args, i)
 
         elif args.algorithm == "FML":
             server = FML(args, i)
