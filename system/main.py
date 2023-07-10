@@ -87,6 +87,28 @@ def run(args):
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
             ]
 
+        elif args.model_family == "CV_popular":
+            args.models = [
+                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
+                'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
+                'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
+                'alexnet(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)'
+            ]
+
+        elif args.model_family == "CV_all":
+            args.models = [
+                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
+                'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
+                'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
+                'alexnet(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet101(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)'
+            ]
+
         else:
             raise NotImplementedError
             
