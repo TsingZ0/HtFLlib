@@ -83,7 +83,7 @@ def run(args):
 
         elif args.model_family == "cnn_resnet18":
             args.models = [
-                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600).to(args.device)', 
+                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
             ]
 
