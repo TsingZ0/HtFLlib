@@ -198,6 +198,8 @@ if __name__ == "__main__":
     parser.add_argument('-mlr', "--mentee_learning_rate", type=float, default=0.005)
     parser.add_argument('-Ts', "--T_start", type=float, default=0.95)
     parser.add_argument('-Te', "--T_end", type=float, default=0.98)
+    # FedPCL
+    parser.add_argument('-tau', "--tau", type=float, default=1.0)
 
 
     args = parser.parse_args()
