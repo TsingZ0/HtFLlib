@@ -9,7 +9,12 @@ from flcore.clients.clientbase import Client
 
 import torchvision
 from flcore.trainmodel.models import *
-from flcore.trainmodel.resnet import resnet18, resnet10, resnet8, resnet6, resnet4
+
+from flcore.trainmodel.bilstm import *
+from flcore.trainmodel.resnet import *
+from flcore.trainmodel.alexnet import *
+from flcore.trainmodel.mobilenet_v2 import *
+from flcore.trainmodel.transformer import *
 
 # hyper-params for Text tasks
 vocab_size = 98635
@@ -57,14 +62,14 @@ class clientPCL(Client):
                 for k in self.global_protos.keys():
                     assert (type(self.global_protos[k]) != type([]))
                     global_protos_emb.append(self.global_protos[k])
-                global_protos_emb = torch.stack(global_protos_emb)
+                global_protos_emb = torch.stack(global_protos_emb).detach()
 
                 client_protos_embs = []
                 for client_protos in self.client_protos_set:
                     client_protos_emb = []
                     for k in client_protos.keys():
                         client_protos_emb.append(client_protos[k])
-                    client_protos_emb = torch.stack(client_protos_emb)
+                    client_protos_emb = torch.stack(client_protos_emb).detach()
                     client_protos_embs.append(client_protos_emb)
 
                 for i, (x, y) in enumerate(trainloader):
@@ -184,14 +189,14 @@ class clientPCL(Client):
                 global_protos_emb = []
                 for k in self.global_protos.keys():
                     global_protos_emb.append(self.global_protos[k])
-                global_protos_emb = torch.stack(global_protos_emb)
+                global_protos_emb = torch.stack(global_protos_emb).detach()
 
                 client_protos_embs = []
                 for client_protos in self.client_protos_set:
                     client_protos_emb = []
                     for k in client_protos.keys():
                         client_protos_emb.append(client_protos[k])
-                    client_protos_emb = torch.stack(client_protos_emb)
+                    client_protos_emb = torch.stack(client_protos_emb).detach()
                     client_protos_embs.append(client_protos_emb)
 
                 for x, y in trainloader:
