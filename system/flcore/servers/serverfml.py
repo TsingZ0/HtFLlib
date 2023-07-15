@@ -7,12 +7,17 @@ from threading import Thread
 
 import torchvision
 from flcore.trainmodel.models import *
-from flcore.trainmodel.resnet import resnet18, resnet10, resnet8, resnet6, resnet4
+
+from flcore.trainmodel.bilstm import *
+from flcore.trainmodel.resnet import *
+from flcore.trainmodel.alexnet import *
+from flcore.trainmodel.mobilenet_v2 import *
+from flcore.trainmodel.transformer import *
 
 # hyper-params for Text tasks
 vocab_size = 98635
 max_len=200
-hidden_dim=32
+emb_dim=32
 
 
 class FML(Server):

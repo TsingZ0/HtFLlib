@@ -84,29 +84,6 @@ class FedPCL(Server):
             self.uploaded_protos.append(client.protos)
             self.client_protos_set[client.id] = client.protos
 
-    def evaluate(self, acc=None, loss=None):
-        stats = self.test_metrics()
-        stats_train = self.train_metrics()
-
-        test_acc = sum(stats[2])*1.0 / sum(stats[1])
-        train_loss = sum(stats_train[2])*1.0 / sum(stats_train[1])
-        accs = [a / n for a, n in zip(stats[2], stats[1])]
-        
-        if acc == None:
-            self.rs_test_acc.append(test_acc)
-        else:
-            acc.append(test_acc)
-        
-        if loss == None:
-            self.rs_train_loss.append(train_loss)
-        else:
-            loss.append(train_loss)
-
-        print("Averaged Train Loss: {:.4f}".format(train_loss))
-        print("Averaged Test Accurancy: {:.4f}".format(test_acc))
-        # self.print_(test_acc, train_acc, train_loss)
-        print("Std Test Accurancy: {:.4f}".format(np.std(accs)))
-
     def prototype_padding(self):
         for cid in range(self.num_clients):
             if self.client_protos_set[cid] is None:

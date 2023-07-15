@@ -486,7 +486,8 @@ class TextCNN(nn.Module):
         self.dropout = nn.Dropout(dropout)
         
         # Fully-Connected Layer
-        self.fc = nn.Linear(num_channels*len(kernel_size), num_classes)
+        self.fc1 = nn.Linear(num_channels*len(kernel_size), hidden_dim)
+        self.fc = nn.Linear(hidden_dim, num_classes)
         
     def forward(self, x):
         text, text_lengths = x
@@ -499,7 +500,8 @@ class TextCNN(nn.Module):
         
         all_out = torch.cat((conv_out1, conv_out2, conv_out3), 1)
         final_feature_map = self.dropout(all_out)
-        out = self.fc(final_feature_map)
+        feat = self.fc1(final_feature_map)
+        out = self.fc(feat)
         out = F.log_softmax(out, dim=1)
 
         return out

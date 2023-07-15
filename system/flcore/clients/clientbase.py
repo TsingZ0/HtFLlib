@@ -21,8 +21,7 @@ from flcore.trainmodel.transformer import *
 # hyper-params for Text tasks
 vocab_size = 98635
 max_len=200
-hidden_dim=32
-
+emb_dim=32
 
 class Client(object):
     """

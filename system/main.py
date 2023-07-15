@@ -107,6 +107,15 @@ def run(args):
                 'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)'
             ]
 
+        elif args.model_family == "NLP_all":
+            args.models = [
+                'fastText(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
+                'LSTMNet(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
+                'BiLSTM_TextClassification(input_size=vocab_size, hidden_size=emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=emb_dim)', 
+                'TextCNN(hidden_dim=emb_dim, max_len=max_len, vocab_size=vocab_size, num_classes=args.num_classes)', 
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
+            ]
+
         else:
             raise NotImplementedError
             
