@@ -91,20 +91,24 @@ class Digit5CNN(nn.Module):
 
 # https://github.com/FengHZ/KD3A/blob/master/model/amazon.py
 class AmazonMLP(nn.Module):
-    def __init__(self):
+    def __init__(self, feature_dim=[500]):
         super(AmazonMLP, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Linear(5000, 1000), 
-            # nn.BatchNorm1d(1000), 
-            nn.ReLU(), 
-            nn.Linear(1000, 500), 
-            # nn.BatchNorm1d(500), 
-            nn.ReLU(),
-            nn.Linear(500, 100), 
-            # nn.BatchNorm1d(100), 
-            nn.ReLU()
-        )
-        self.fc = nn.Linear(100, 2)
+        self.in_features = 5000
+        self.out_features = 100
+        layers = []
+        for idx in range(len(feature_dim)):
+            if len(layers) == 0:
+                layers.append(nn.Linear(self.in_features, feature_dim[idx]))
+                layers.append(nn.ReLU())
+            else:
+                layers.append(nn.Linear(feature_dim[idx-1], feature_dim[idx]))
+                layers.append(nn.ReLU())
+
+        layers.append(nn.Linear(feature_dim[idx], self.out_features))
+        layers.append(nn.ReLU())
+
+        self.encoder = nn.Sequential(*layers)
+        self.fc = nn.Linear(self.out_features, 2)
 
     def forward(self, x):
         out = self.encoder(x)

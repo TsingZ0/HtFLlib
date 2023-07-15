@@ -116,6 +116,43 @@ def run(args):
                 'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
             ]
 
+        elif args.model_family == "NLP_popular":
+            args.models = [
+                'LSTMNet(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
+                'BiLSTM_TextClassification(input_size=vocab_size, hidden_size=emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=emb_dim)', 
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
+            ]
+
+        elif args.model_family == "NLP_Transformers":
+            args.models = [
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=4, num_classes=args.num_classes)'
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=8, num_classes=args.num_classes)'
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=16, num_classes=args.num_classes)'
+                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=32, num_classes=args.num_classes)'
+            ]
+
+        elif args.model_family == "MLPs":
+            args.models = [
+                'AmazonMLP(feature_dim=[200])', 
+                'AmazonMLP(feature_dim=[500])', 
+                'AmazonMLP(feature_dim=[1000, 500])', 
+                'AmazonMLP(feature_dim=[1000, 500, 200])', 
+            ]
+
+        elif args.model_family == "MLP_1layer":
+            args.models = [
+                'AmazonMLP(feature_dim=[200])', 
+                'AmazonMLP(feature_dim=[500])', 
+            ]
+
+        elif args.model_family == "MLP_layers":
+            args.models = [
+                'AmazonMLP(feature_dim=[500])', 
+                'AmazonMLP(feature_dim=[1000, 500])', 
+                'AmazonMLP(feature_dim=[1000, 500, 200])', 
+            ]
+
         else:
             raise NotImplementedError
             
