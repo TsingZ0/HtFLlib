@@ -8,7 +8,7 @@ from torch import nn, Tensor
 # https://pytorch.org/tutorials/beginner/transformer_tutorial.html
 class PositionalEncoding(nn.Module):
 
-    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 5000):
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 200):
         super().__init__()
         self.dropout = nn.Dropout(p=dropout)
 
@@ -30,10 +30,10 @@ class PositionalEncoding(nn.Module):
 class TransformerModel(nn.Module):
 
     def __init__(self, ntoken: int, d_model: int, nhead: int, d_hid: int,
-                 nlayers: int, num_classes: int, dropout: float = 0.5):
+                 nlayers: int, num_classes: int, dropout: float = 0.5, max_len: int = 200):
         super().__init__()
         self.model_type = 'Transformer'
-        self.pos_encoder = PositionalEncoding(d_model, dropout)
+        self.pos_encoder = PositionalEncoding(d_model, dropout, max_len)
         encoder_layers = TransformerEncoderLayer(d_model, nhead, d_hid, dropout)
         self.transformer_encoder = TransformerEncoder(encoder_layers, nlayers)
         self.embedding = nn.Embedding(ntoken, d_model)

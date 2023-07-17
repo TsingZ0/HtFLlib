@@ -16,11 +16,6 @@ from flcore.trainmodel.alexnet import *
 from flcore.trainmodel.mobilenet_v2 import *
 from flcore.trainmodel.transformer import *
 
-# hyper-params for Text tasks
-vocab_size = 98635
-max_len=200
-emb_dim=32
-
 
 class clientPCL(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):

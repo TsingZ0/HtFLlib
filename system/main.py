@@ -109,27 +109,27 @@ def run(args):
 
         elif args.model_family == "NLP_all":
             args.models = [
-                'fastText(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
-                'LSTMNet(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
-                'BiLSTM_TextClassification(input_size=vocab_size, hidden_size=emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=emb_dim)', 
-                'TextCNN(hidden_dim=emb_dim, max_len=max_len, vocab_size=vocab_size, num_classes=args.num_classes)', 
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
+                'fastText(hidden_dim=args.word_emb_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
+                'LSTMNet(hidden_dim=args.word_emb_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
+                'BiLSTM_TextClassification(input_size=args.vocab_size, hidden_size=args.word_emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=args.word_emb_dim)', 
+                'TextCNN(hidden_dim=args.word_emb_dim, max_len=args.max_len, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
             ]
 
         elif args.model_family == "NLP_popular":
             args.models = [
-                'LSTMNet(hidden_dim=emb_dim, vocab_size=vocab_size, num_classes=args.num_classes)', 
-                'BiLSTM_TextClassification(input_size=vocab_size, hidden_size=emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=emb_dim)', 
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
+                'LSTMNet(hidden_dim=args.word_emb_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
+                'BiLSTM_TextClassification(input_size=args.vocab_size, hidden_size=args.word_emb_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=args.word_emb_dim)', 
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
             ]
 
         elif args.model_family == "NLP_Transformers":
             args.models = [
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=2, num_classes=args.num_classes)'
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=4, num_classes=args.num_classes)'
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=8, num_classes=args.num_classes)'
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=16, num_classes=args.num_classes)'
-                'TransformerModel(ntoken=vocab_size, d_model=emb_dim, nhead=8, d_hid=emb_dim, nlayers=32, num_classes=args.num_classes)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=4, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=8, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=16, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.word_emb_dim, nhead=8, d_hid=args.word_emb_dim, nlayers=32, num_classes=args.num_classes, max_len=args.max_len)'
             ]
 
         elif args.model_family == "MLPs":
@@ -239,6 +239,9 @@ if __name__ == "__main__":
     parser.add_argument('-sfn', "--save_folder_name", type=str, default='items')
     parser.add_argument('-ab', "--auto_break", type=bool, default=False)
     parser.add_argument('-fd', "--feature_dim", type=int, default=512)
+    parser.add_argument('-vs', "--vocab_size", type=int, default=98635)
+    parser.add_argument('-ml', "--max_len", type=int, default=200)
+    parser.add_argument('-wed', "--word_emb_dim", type=int, default=32)
     # practical
     parser.add_argument('-cdr', "--client_drop_rate", type=float, default=0.0,
                         help="Rate for clients that train but drop out")
