@@ -98,6 +98,34 @@ class FedProto(Server):
         ids = [c.id for c in self.clients]
 
         return ids, num_samples, (tot_correct, tot_correct1), tot_auc
+
+    def evaluate(self, acc=None, loss=None):
+        stats = self.test_metrics()
+        stats_train = self.train_metrics()
+
+        test_acc = sum(stats[2][0])*1.0 / sum(stats[1])
+        test_acc1 = sum(stats[2][1])*1.0 / sum(stats[1])
+        train_loss = sum(stats_train[2])*1.0 / sum(stats_train[1])
+        accs = [a / n for a, n in zip(stats[2][0], stats[1])]
+        accs1 = [a / n for a, n in zip(stats[2][1], stats[1])]
+        
+        if acc == None:
+            self.rs_test_acc.append(test_acc)
+            self.rs_test_acc_cla.append(test_acc1)
+        else:
+            acc.append(test_acc)
+        
+        if loss == None:
+            self.rs_train_loss.append(train_loss)
+        else:
+            loss.append(train_loss)
+
+        print("Averaged Train Loss: {:.4f}".format(train_loss))
+        print("Averaged Test Accurancy: {:.4f}".format(test_acc))
+        print("Averaged Test Accurancy of Classifier: {:.4f}".format(test_acc1))
+        # self.print_(test_acc, train_acc, train_loss)
+        print("Std Test Accurancy: {:.4f}".format(np.std(accs)))
+        print("Std Test Accurancy of Classifier: {:.4f}".format(np.std(accs1)))
     
 
 # https://github.com/yuetan031/fedproto/blob/main/lib/utils.py#L221
