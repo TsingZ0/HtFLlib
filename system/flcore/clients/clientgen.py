@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import time
-from flcore.clients.clientbase import Client
+from flcore.clients.clientbase import Client, load_item, save_item
 
 
 class clientGen(Client):
@@ -10,16 +10,6 @@ class clientGen(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
         trainloader = self.load_train_data()
-        for x, y in trainloader:
-            if type(x) == type([]):
-                x[0] = x[0].to(self.device)
-            else:
-                x = x.to(self.device)
-            y = y.to(self.device)
-            with torch.no_grad():
-                rep = self.model.base(x).detach()
-            break
-        self.feature_dim = rep.shape[1]
 
         self.sample_per_class = torch.zeros(self.num_classes)
         trainloader = self.load_train_data()
@@ -28,13 +18,15 @@ class clientGen(Client):
                 self.sample_per_class[yy.item()] += 1
 
         self.qualified_labels = []
-        self.generative_model = None
         
 
     def train(self):
         trainloader = self.load_train_data()
-        # self.model.to(self.device)
-        self.model.train()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        generative_model = load_item('Server', 'generative_model', self.save_folder_name)
+        optimizer = torch.optim.SGD(model.parameters(), lr=self.learning_rate)
+        # model.to(self.device)
+        model.train()
         
         start_time = time.time()
 
@@ -51,39 +43,39 @@ class clientGen(Client):
                 y = y.to(self.device)
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
                 
-                if self.generative_model is not None:
+                if generative_model is not None:
                     labels = np.random.choice(self.qualified_labels, self.batch_size)
                     labels = torch.LongTensor(labels).to(self.device)
-                    z = self.generative_model(labels)
-                    loss += self.loss(self.model.head(z), labels)
+                    z = generative_model(labels)
+                    loss += self.loss(model.head(z), labels)
 
-                self.optimizer.zero_grad()
+                optimizer.zero_grad()
                 loss.backward()
-                self.optimizer.step()
+                optimizer.step()
 
-        # self.model.cpu()
-
-        if self.learning_rate_decay:
-            self.learning_rate_scheduler.step()
+        save_item(model, self.role, 'model', self.save_folder_name)
 
         self.train_time_cost['num_rounds'] += 1
         self.train_time_cost['total_cost'] += time.time() - start_time
             
         
-    def set_parameters(self, model, generative_model):
-        for new_param, old_param in zip(model.parameters(), self.model.head.parameters()):
-            old_param.data = new_param.data.clone()
-
-        self.generative_model = generative_model
+    def set_parameters(self):
+        model = load_item(self.role, 'model', self.save_folder_name)
+        global_head = load_item('Server', 'global_head', self.save_folder_name)
+        if global_head is not None:
+            for new_param, old_param in zip(global_head.parameters(), model.head.parameters()):
+                old_param.data = new_param.data.clone()
+        save_item(model, self.role, 'model', self.save_folder_name)
 
     def train_metrics(self):
         trainloader = self.load_train_data()
-        # self.model = self.load_model('model')
-        # self.model.to(self.device)
-        self.model.eval()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        generative_model = load_item('Server', 'generative_model', self.save_folder_name)
+        # model.to(self.device)
+        model.eval()
 
         train_num = 0
         losses = 0
@@ -94,19 +86,16 @@ class clientGen(Client):
                 else:
                     x = x.to(self.device)
                 y = y.to(self.device)
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
                 
-                if self.generative_model is not None:
+                if generative_model is not None:
                     labels = np.random.choice(self.qualified_labels, self.batch_size)
                     labels = torch.LongTensor(labels).to(self.device)
-                    z = self.generative_model(labels)
-                    loss += self.loss(self.model.head(z), labels)
+                    z = generative_model(labels)
+                    loss += self.loss(model.head(z), labels)
                 
                 train_num += y.shape[0]
                 losses += loss.item() * y.shape[0]
-
-        # self.model.cpu()
-        # self.save_model(self.model, 'model')
 
         return losses, train_num

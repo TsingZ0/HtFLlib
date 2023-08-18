@@ -14,7 +14,6 @@ from flcore.servers.serverdistill import FedDistill
 from flcore.servers.serverlg import LG_FedAvg
 from flcore.servers.serverfml import FML
 from flcore.servers.serverkd import FedKD
-from flcore.servers.serverpcl import FedPCL
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
@@ -180,9 +179,6 @@ def run(args):
 
         elif args.algorithm == "FedKD":
             server = FedKD(args, i)
-
-        elif args.algorithm == "FedPCL":
-            server = FedPCL(args, i)
             
         else:
             raise NotImplementedError
@@ -266,8 +262,6 @@ if __name__ == "__main__":
     parser.add_argument('-mlr', "--mentee_learning_rate", type=float, default=0.005)
     parser.add_argument('-Ts', "--T_start", type=float, default=0.95)
     parser.add_argument('-Te', "--T_end", type=float, default=0.98)
-    # FedPCL
-    parser.add_argument('-tau', "--tau", type=float, default=1.0)
 
 
     args = parser.parse_args()

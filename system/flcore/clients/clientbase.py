@@ -28,7 +28,8 @@ class Client(object):
         self.dataset = args.dataset
         self.device = args.device
         self.id = id  # integer
-        self.save_folder_name = args.save_folder_name
+        self.role = 'Client_' + str(self.id)
+        self.save_folder_name = args.save_folder_name_full
 
         self.num_classes = args.num_classes
         self.train_samples = train_samples
@@ -38,18 +39,19 @@ class Client(object):
         self.local_epochs = args.local_epochs
 
         self.feature_dim = args.feature_dim
-        which_model = args.models[self.id % len(args.models)]
-        self.model = eval(which_model).to(self.device)
 
-        self.model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
+        which_model = args.models[self.id % len(args.models)]
+        model = eval(which_model).to(self.device)
+
+        model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
 
         head = nn.Linear(self.feature_dim, self.num_classes) # can be more personalized
-        self.model = BaseHeadSplit(self.model, head).to(self.device)
-        # print(f'Client {self.id}', which_model, self.model)
+        model = BaseHeadSplit(model, head).to(self.device)
+        # print(f'Client {self.id}', which_model, model)
 
         # check BatchNorm
         self.has_BatchNorm = False
-        for layer in self.model.children():
+        for layer in model.children():
             if isinstance(layer, nn.BatchNorm2d):
                 self.has_BatchNorm = True
                 break
@@ -60,12 +62,9 @@ class Client(object):
         self.send_time_cost = {'num_rounds': 0, 'total_cost': 0.0}
 
         self.loss = nn.CrossEntropyLoss()
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=self.learning_rate)
-        self.learning_rate_scheduler = torch.optim.lr_scheduler.ExponentialLR(
-            optimizer=self.optimizer, 
-            gamma=args.learning_rate_decay_gamma
-        )
-        self.learning_rate_decay = args.learning_rate_decay
+
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            save_item(model, self.role, 'model', self.save_folder_name)
 
 
     def load_train_data(self, batch_size=None):
@@ -79,10 +78,6 @@ class Client(object):
             batch_size = self.batch_size
         test_data = read_client_data(self.dataset, self.id, is_train=False)
         return DataLoader(test_data, batch_size, drop_last=False, shuffle=False)
-        
-    def set_parameters(self, model):
-        for new_param, old_param in zip(model.parameters(), self.model.parameters()):
-            old_param.data = new_param.data.clone()
 
     def clone_model(self, model, target):
         for param, target_param in zip(model.parameters(), target.parameters()):
@@ -95,9 +90,9 @@ class Client(object):
 
     def test_metrics(self):
         testloaderfull = self.load_test_data()
-        # self.model = self.load_model('model')
-        # self.model.to(self.device)
-        self.model.eval()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        # model.to(self.device)
+        model.eval()
 
         test_acc = 0
         test_num = 0
@@ -111,7 +106,7 @@ class Client(object):
                 else:
                     x = x.to(self.device)
                 y = y.to(self.device)
-                output = self.model(x)
+                output = model(x)
 
                 test_acc += (torch.sum(torch.argmax(output, dim=1) == y)).item()
                 test_num += y.shape[0]
@@ -125,9 +120,6 @@ class Client(object):
                     lb = lb[:, :2]
                 y_true.append(lb)
 
-        # self.model.cpu()
-        # self.save_model(self.model, 'model')
-
         y_prob = np.concatenate(y_prob, axis=0)
         y_true = np.concatenate(y_true, axis=0)
 
@@ -137,9 +129,9 @@ class Client(object):
 
     def train_metrics(self):
         trainloader = self.load_train_data()
-        # self.model = self.load_model('model')
-        # self.model.to(self.device)
-        self.model.eval()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        # model.to(self.device)
+        model.eval()
 
         train_num = 0
         losses = 0
@@ -150,13 +142,10 @@ class Client(object):
                 else:
                     x = x.to(self.device)
                 y = y.to(self.device)
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
                 train_num += y.shape[0]
                 losses += loss.item() * y.shape[0]
-
-        # self.model.cpu()
-        # self.save_model(self.model, 'model')
 
         return losses, train_num
 
@@ -177,18 +166,14 @@ class Client(object):
     #     return x, y
 
 
-    def save_item(self, item, item_name, item_path=None):
-        if item_path == None:
-            item_path = self.save_folder_name
-        if not os.path.exists(item_path):
-            os.makedirs(item_path)
-        torch.save(item, os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"))
+def save_item(item, role, item_name, item_path=None):
+    if not os.path.exists(item_path):
+        os.makedirs(item_path)
+    torch.save(item, os.path.join(item_path, role + "_" + item_name + ".pt"))
 
-    def load_item(self, item_name, item_path=None):
-        if item_path == None:
-            item_path = self.save_folder_name
-        return torch.load(os.path.join(item_path, "client_" + str(self.id) + "_" + item_name + ".pt"))
-
-    # @staticmethod
-    # def model_exists():
-    #     return os.path.exists(os.path.join("models", "server" + ".pt"))
+def load_item(role, item_name, item_path=None):
+    try:
+        return torch.load(os.path.join(item_path, role + "_" + item_name + ".pt"))
+    except:
+        print(role, item_name, 'Not Found')
+        return None

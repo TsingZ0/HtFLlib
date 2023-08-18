@@ -1,8 +1,10 @@
-from flcore.clients.clientdistill import clientDistill
-from flcore.servers.serverbase import Server
-from threading import Thread
+
 import time
 import numpy as np
+from flcore.clients.clientdistill import clientDistill
+from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
+from threading import Thread
 from collections import defaultdict
 
 
@@ -20,7 +22,6 @@ class FedDistill(Server):
         # self.load_model()
         self.Budget = []
         self.num_classes = args.num_classes
-        self.global_logits = [None for _ in range(args.num_classes)]
 
 
     def train(self):
@@ -42,8 +43,6 @@ class FedDistill(Server):
             # [t.join() for t in threads]
 
             self.receive_logits()
-            self.global_logits = logit_aggregation(self.uploaded_logits)
-            self.send_logits()
 
             self.Budget.append(time.time() - s_t)
             print('-'*50, self.Budget[-1])
@@ -60,25 +59,18 @@ class FedDistill(Server):
         self.save_results()
         
 
-    def send_logits(self):
-        assert (len(self.clients) > 0)
-
-        for client in self.clients:
-            start_time = time.time()
-
-            client.set_logits(self.global_logits)
-
-            client.send_time_cost['num_rounds'] += 1
-            client.send_time_cost['total_cost'] += 2 * (time.time() - start_time)
-
     def receive_logits(self):
         assert (len(self.selected_clients) > 0)
 
         self.uploaded_ids = []
-        self.uploaded_logits = []
+        uploaded_logits = []
         for client in self.selected_clients:
             self.uploaded_ids.append(client.id)
-            self.uploaded_logits.append(client.logits)
+            logits = load_item(client.role, 'logits', client.save_folder_name)
+            uploaded_logits.append(logits)
+            
+        global_logits = logit_aggregation(uploaded_logits)
+        save_item(global_logits, self.role, 'global_logits', self.save_folder_name)
 
 
 # https://github.com/yuetan031/fedlogit/blob/main/lib/utils.py#L221

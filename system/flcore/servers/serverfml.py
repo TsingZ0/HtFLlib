@@ -3,6 +3,7 @@ import random
 import time
 from flcore.clients.clientfml import clientFML
 from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
 from threading import Thread
 
 import torchvision
@@ -18,12 +19,13 @@ from flcore.trainmodel.transformer import *
 class FML(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
-        args.global_model = eval(args.models[0])
-        args.global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
-        head = nn.Linear(args.feature_dim, args.num_classes)
-        args.global_model = BaseHeadSplit(args.global_model, head).to(args.device)
-        
-        self.global_model = copy.deepcopy(args.global_model)
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            global_model = eval(args.models[0])
+            global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
+            head = nn.Linear(args.feature_dim, args.num_classes)
+            global_model = BaseHeadSplit(global_model, head).to(args.device)
+            
+            save_item(global_model, self.role, 'global_model', self.save_folder_name)
         
         # select slow clients
         self.set_slow_clients()
@@ -40,7 +42,6 @@ class FML(Server):
         for i in range(self.global_rounds+1):
             s_t = time.time()
             self.selected_clients = self.select_clients()
-            self.send_models()
 
             if i%self.eval_gap == 0:
                 print(f"\n-------------Round number: {i}-------------")
@@ -55,7 +56,7 @@ class FML(Server):
             # [t.start() for t in threads]
             # [t.join() for t in threads]
 
-            self.receive_models()
+            self.receive_ids()
             self.aggregate_parameters()
 
             self.Budget.append(time.time() - s_t)
@@ -72,34 +73,20 @@ class FML(Server):
         print(sum(self.Budget[1:])/len(self.Budget[1:]))
 
         self.save_results()
-        self.save_global_model()
         
-
-    def receive_models(self):
-        assert (len(self.selected_clients) > 0)
-
-        active_clients = random.sample(
-            self.selected_clients, int((1-self.client_drop_rate) * self.current_num_join_clients))
-
-        self.uploaded_ids = []
-        self.uploaded_models = []
-        for client in active_clients:
-            try:
-                client_time_cost = client.train_time_cost['total_cost'] / client.train_time_cost['num_rounds'] + \
-                        client.send_time_cost['total_cost'] / client.send_time_cost['num_rounds']
-            except ZeroDivisionError:
-                client_time_cost = 0
-            if client_time_cost <= self.time_threthold:
-                self.uploaded_ids.append(client.id)
-                self.uploaded_models.append(client.global_model)
-
+        
     def aggregate_parameters(self):
-        assert (len(self.uploaded_models) > 0)
+        assert (len(self.uploaded_ids) > 0)
 
-        self.global_model = copy.deepcopy(self.uploaded_models[0])
-        for param in self.global_model.parameters():
+        client = self.clients[self.uploaded_ids[0]]
+        global_model = load_item(client.role, 'global_model', client.save_folder_name)
+        for param in global_model.parameters():
             param.data.zero_()
             
-        # use 1/len(self.uploaded_models) as the weight for privacy and fairness
-        for client_model in self.uploaded_models:
-            self.add_parameters(1/len(self.uploaded_models), client_model)
+        for cid in self.uploaded_ids:
+            client = self.clients[cid]
+            client_model = load_item(client.role, 'global_model', client.save_folder_name)
+            for server_param, client_param in zip(global_model.parameters(), client_model.parameters()):
+                server_param.data += client_param.data.clone() * 1/len(self.uploaded_ids)
+
+        save_item(global_model, self.role, 'global_model', self.save_folder_name)

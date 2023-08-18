@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import time
-from flcore.clients.clientbase import Client
+from flcore.clients.clientbase import Client, load_item, save_item
 
 
 class clientLocal(Client):
@@ -11,8 +11,10 @@ class clientLocal(Client):
 
     def train(self):
         trainloader = self.load_train_data()
-        # self.model.to(self.device)
-        self.model.train()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        optimizer = torch.optim.SGD(model.parameters(), lr=self.learning_rate)
+        # model.to(self.device)
+        model.train()
         
         start_time = time.time()
 
@@ -29,17 +31,14 @@ class clientLocal(Client):
                 y = y.to(self.device)
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
-                self.optimizer.zero_grad()
+                optimizer.zero_grad()
                 loss.backward()
-                self.optimizer.step()
+                optimizer.step()
 
-        # self.model.cpu()
-
-        if self.learning_rate_decay:
-            self.learning_rate_scheduler.step()
-
+        save_item(model, self.role, 'model', self.save_folder_name)
+        
         self.train_time_cost['num_rounds'] += 1
         self.train_time_cost['total_cost'] += time.time() - start_time
         

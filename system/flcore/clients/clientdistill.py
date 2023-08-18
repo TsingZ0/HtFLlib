@@ -1,18 +1,16 @@
-from collections import defaultdict
 import copy
 import torch
 import torch.nn as nn
 import numpy as np
 import time
-from flcore.clients.clientbase import Client
+from flcore.clients.clientbase import Client, load_item, save_item
+from collections import defaultdict
 
 
 class clientDistill(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
-        self.logits = None
-        self.global_logits = None
         self.loss_mse = nn.MSELoss()
 
         self.lamda = args.lamda
@@ -20,10 +18,14 @@ class clientDistill(Client):
 
     def train(self):
         trainloader = self.load_train_data()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        optimizer = torch.optim.SGD(model.parameters(), lr=self.learning_rate)
+        global_logits = load_item('Server', 'global_logits', self.save_folder_name)
+        
         start_time = time.time()
 
-        # self.model.to(self.device)
-        self.model.train()
+        # model.to(self.device)
+        model.train()
 
         max_local_epochs = self.local_epochs
         if self.train_slow:
@@ -39,44 +41,38 @@ class clientDistill(Client):
                 y = y.to(self.device)
                 if self.train_slow:
                     time.sleep(0.1 * np.abs(np.random.rand()))
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
 
-                if self.global_logits != None:
+                if global_logits != None:
                     logit_new = copy.deepcopy(output.detach())
                     for i, yy in enumerate(y):
                         y_c = yy.item()
-                        if type(self.global_logits[y_c]) != type([]):
-                            logit_new[i, :] = self.global_logits[y_c].data
+                        if type(global_logits[y_c]) != type([]):
+                            logit_new[i, :] = global_logits[y_c].data
                     loss += self.loss_mse(logit_new, output) * self.lamda
 
                 for i, yy in enumerate(y):
                     y_c = yy.item()
                     logits[y_c].append(output[i, :].detach().data)
 
-                self.optimizer.zero_grad()
+                optimizer.zero_grad()
                 loss.backward()
-                self.optimizer.step()
+                optimizer.step()
 
-        # self.model.cpu()
-
-        self.logits = agg_func(logits)
-
-        if self.learning_rate_decay:
-            self.learning_rate_scheduler.step()
+        save_item(model, self.role, 'model', self.save_folder_name)
+        save_item(agg_func(logits), self.role, 'logits', self.save_folder_name)
 
         self.train_time_cost['num_rounds'] += 1
         self.train_time_cost['total_cost'] += time.time() - start_time
 
 
-    def set_logits(self, global_logits):
-        self.global_logits = copy.deepcopy(global_logits)
-
     def train_metrics(self):
         trainloader = self.load_train_data()
-        # self.model = self.load_model('model')
-        # self.model.to(self.device)
-        self.model.eval()
+        model = load_item(self.role, 'model', self.save_folder_name)
+        global_logits = load_item('Server', 'global_logits', self.save_folder_name)
+        # model.to(self.device)
+        model.eval()
 
         train_num = 0
         losses = 0
@@ -87,22 +83,19 @@ class clientDistill(Client):
                 else:
                     x = x.to(self.device)
                 y = y.to(self.device)
-                output = self.model(x)
+                output = model(x)
                 loss = self.loss(output, y)
 
-                if self.global_logits != None:
+                if global_logits != None:
                     logit_new = copy.deepcopy(output.detach())
                     for i, yy in enumerate(y):
                         y_c = yy.item()
-                        if type(self.global_logits[y_c]) != type([]):
-                            logit_new[i, :] = self.global_logits[y_c].data
+                        if type(global_logits[y_c]) != type([]):
+                            logit_new[i, :] = global_logits[y_c].data
                     loss += self.loss_mse(logit_new, output) * self.lamda
                     
                 train_num += y.shape[0]
                 losses += loss.item() * y.shape[0]
-
-        # self.model.cpu()
-        # self.save_model(self.model, 'model')
 
         return losses, train_num
 

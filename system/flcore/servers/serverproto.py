@@ -1,9 +1,10 @@
-from flcore.clients.clientproto import clientProto
-from flcore.servers.serverbase import Server
-from utils.data_utils import read_client_data
-from threading import Thread
 import time
 import numpy as np
+from flcore.clients.clientproto import clientProto
+from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
+from utils.data_utils import read_client_data
+from threading import Thread
 from collections import defaultdict
 
 
@@ -21,7 +22,6 @@ class FedProto(Server):
         # self.load_model()
         self.Budget = []
         self.num_classes = args.num_classes
-        self.global_protos = [None for _ in range(args.num_classes)]
         self.rs_test_acc_cla = []
 
 
@@ -44,8 +44,6 @@ class FedProto(Server):
             # [t.join() for t in threads]
 
             self.receive_protos()
-            self.global_protos = proto_aggregation(self.uploaded_protos)
-            self.send_protos()
 
             self.Budget.append(time.time() - s_t)
             print('-'*50, self.Budget[-1])
@@ -63,25 +61,18 @@ class FedProto(Server):
         self.save_results()
         
 
-    def send_protos(self):
-        assert (len(self.clients) > 0)
-
-        for client in self.clients:
-            start_time = time.time()
-
-            client.set_protos(self.global_protos)
-
-            client.send_time_cost['num_rounds'] += 1
-            client.send_time_cost['total_cost'] += 2 * (time.time() - start_time)
-
     def receive_protos(self):
         assert (len(self.selected_clients) > 0)
 
         self.uploaded_ids = []
-        self.uploaded_protos = []
+        uploaded_protos = []
         for client in self.selected_clients:
             self.uploaded_ids.append(client.id)
-            self.uploaded_protos.append(client.protos)
+            protos = load_item(client.role, 'protos', client.save_folder_name)
+            uploaded_protos.append(protos)
+            
+        global_protos = proto_aggregation(uploaded_protos)
+        save_item(global_protos, self.role, 'global_protos', self.save_folder_name)
 
     def test_metrics(self):
         num_samples = []
@@ -92,6 +83,7 @@ class FedProto(Server):
             ct, ns, auc = c.test_metrics()
             tot_correct.append(ct[0]*1.0)
             tot_correct1.append(ct[1]*1.0)
+            print(f'Client {c.id}: Acc: {ct[0]*1.0/ns}, AUC: {auc}')
             tot_auc.append(auc*ns)
             num_samples.append(ns)
 
@@ -101,11 +93,11 @@ class FedProto(Server):
 
     def evaluate(self, acc=None, loss=None):
         stats = self.test_metrics()
-        stats_train = self.train_metrics()
+        # stats_train = self.train_metrics()
 
         test_acc = sum(stats[2][0])*1.0 / sum(stats[1])
         test_acc1 = sum(stats[2][1])*1.0 / sum(stats[1])
-        train_loss = sum(stats_train[2])*1.0 / sum(stats_train[1])
+        # train_loss = sum(stats_train[2])*1.0 / sum(stats_train[1])
         accs = [a / n for a, n in zip(stats[2][0], stats[1])]
         accs1 = [a / n for a, n in zip(stats[2][1], stats[1])]
         
@@ -115,12 +107,12 @@ class FedProto(Server):
         else:
             acc.append(test_acc)
         
-        if loss == None:
-            self.rs_train_loss.append(train_loss)
-        else:
-            loss.append(train_loss)
+        # if loss == None:
+        #     self.rs_train_loss.append(train_loss)
+        # else:
+        #     loss.append(train_loss)
 
-        print("Averaged Train Loss: {:.4f}".format(train_loss))
+        # print("Averaged Train Loss: {:.4f}".format(train_loss))
         print("Averaged Test Accurancy: {:.4f}".format(test_acc))
         print("Averaged Test Accurancy of Classifier: {:.4f}".format(test_acc1))
         # self.print_(test_acc, train_acc, train_loss)

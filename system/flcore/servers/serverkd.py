@@ -3,8 +3,9 @@ import random
 import time
 
 import numpy as np
-from flcore.clients.clientkd import clientKD
+from flcore.clients.clientkd import clientKD, recover
 from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
 from threading import Thread
 
 import torchvision
@@ -16,15 +17,23 @@ from flcore.trainmodel.alexnet import *
 from flcore.trainmodel.mobilenet_v2 import *
 from flcore.trainmodel.transformer import *
 
+# hyper-params for Text tasks
+vocab_size = 98635
+max_len=200
+emb_dim=32
+
 
 class FedKD(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
-        args.global_model = eval(args.models[0])
-        args.global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
-        head = nn.Linear(args.feature_dim, args.num_classes)
-        args.global_model = BaseHeadSplit(args.global_model, head).to(args.device)
-
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            global_model = eval(args.models[0])
+            global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
+            head = nn.Linear(args.feature_dim, args.num_classes)
+            global_model = BaseHeadSplit(global_model, head).to(args.device)
+            
+            save_item(global_model, self.role, 'global_model', self.save_folder_name)
+        
         # select slow clients
         self.set_slow_clients()
         self.set_clients(clientKD)
@@ -37,14 +46,12 @@ class FedKD(Server):
         self.T_start = args.T_start
         self.T_end = args.T_end
         self.energy = self.T_start
-        self.compressed_param = {}
 
 
     def train(self):
         for i in range(self.global_rounds+1):
             s_t = time.time()
             self.selected_clients = self.select_clients()
-            self.send_models()
 
             if i%self.eval_gap == 0:
                 print(f"\n-------------Round number: {i}-------------")
@@ -59,9 +66,9 @@ class FedKD(Server):
             # [t.start() for t in threads]
             # [t.join() for t in threads]
 
-            self.receive_models()
+            self.receive_ids()
             self.aggregate_parameters()
-            self.decomposition()
+            self.send_parameters()
 
             self.Budget.append(time.time() - s_t)
             print('-'*25, 'time cost', '-'*25, self.Budget[-1])
@@ -79,91 +86,65 @@ class FedKD(Server):
         print(sum(self.Budget[1:])/len(self.Budget[1:]))
 
         self.save_results()
-        self.save_global_model()
+
         
-
-    def send_models(self):
-        assert (len(self.clients) > 0)
-
-        for client in self.clients:
-            start_time = time.time()
-            
-            client.set_parameters(self.compressed_param, self.energy)
-
-            client.send_time_cost['num_rounds'] += 1
-            client.send_time_cost['total_cost'] += 2 * (time.time() - start_time)
-
-    def receive_models(self):
-        assert (len(self.selected_clients) > 0)
-
-        active_clients = random.sample(
-            self.selected_clients, int((1-self.client_drop_rate) * self.current_num_join_clients))
-
-        self.uploaded_ids = []
-        self.uploaded_models = []
-        for client in active_clients:
-            try:
-                client_time_cost = client.train_time_cost['total_cost'] / client.train_time_cost['num_rounds'] + \
-                        client.send_time_cost['total_cost'] / client.send_time_cost['num_rounds']
-            except ZeroDivisionError:
-                client_time_cost = 0
-            if client_time_cost <= self.time_threthold:
-                self.uploaded_ids.append(client.id)
-                # recover
-                for k in client.compressed_param.keys():
-                    if len(client.compressed_param[k]) == 3:
-                        # use np.matmul to support high-dimensional CNN param
-                        client.compressed_param[k] = np.matmul(
-                            client.compressed_param[k][0] * client.compressed_param[k][1][..., None, :], 
-                                client.compressed_param[k][2])
-            
-                self.uploaded_models.append(client.compressed_param)
-
     def aggregate_parameters(self):
-        assert (len(self.uploaded_models) > 0)
+        assert (len(self.uploaded_ids) > 0)
 
-        self.global_model = copy.deepcopy(self.uploaded_models[0])
-        for k in self.global_model.keys():
-            self.global_model[k] = np.zeros_like(self.global_model[k])
+        client = self.clients[self.uploaded_ids[0]]
+        global_model = load_item(client.role, 'global_model', client.save_folder_name)
+        compressed_param = decomposition(global_model.named_parameters(), self.energy)
+        compressed_param = recover(compressed_param)
+        for k in compressed_param.keys():
+            compressed_param[k] = np.zeros_like(compressed_param[k])
             
-        # use 1/len(self.uploaded_models) as the weight for privacy and fairness
-        for client_model in self.uploaded_models:
-            self.add_parameters(1/len(self.uploaded_models), client_model)
+        for cid in self.uploaded_ids:
+            client = self.clients[cid]
+            client_global_model = load_item(client.role, 'global_model', client.save_folder_name)
+            client_compressed_param = decomposition(client_global_model.named_parameters(), self.energy)
+            client_compressed_param = recover(client_compressed_param)
+            for server_k, client_k in zip(compressed_param.keys(), client_compressed_param.keys()):
+                compressed_param[server_k] += client_compressed_param[client_k] * 1/len(self.uploaded_ids)
 
-    def add_parameters(self, w, client_model):
-        for server_k, client_k in zip(self.global_model.keys(), client_model.keys()):
-            self.global_model[server_k] += client_model[client_k] * w
+        compressed_param = decomposition(compressed_param.items(), self.energy)
+        save_item(compressed_param, self.role, 'compressed_param', self.save_folder_name)
+
     
-    def decomposition(self):
-        self.compressed_param = {}
-        for name, param_cpu in self.global_model.items():
-            # refer to https://github.com/wuch15/FedKD/blob/main/run.py#L187
-            if len(param_cpu.shape)>1 and 'embeddings' not in name:
-                u, sigma, v = np.linalg.svd(param_cpu, full_matrices=False)
+def decomposition(param_iter, energy):
+    compressed_param = {}
+    for name, param in param_iter:
+        try:
+            param_cpu = param.detach().cpu().numpy()
+        except:
+            param_cpu = param
+        # refer to https://github.com/wuch15/FedKD/blob/main/run.py#L187
+        if len(param_cpu.shape)>1 and 'embeddings' not in name:
+            u, sigma, v = np.linalg.svd(param_cpu, full_matrices=False)
+            # support high-dimensional CNN param
+            if len(u.shape)==4:
+                u = np.transpose(u, (2, 3, 0, 1))
+                sigma = np.transpose(sigma, (2, 0, 1))
+                v = np.transpose(v, (2, 3, 0, 1))
+            threshold=0
+            if np.sum(np.square(sigma))==0:
+                compressed_param_cpu=param_cpu
+            else:
+                for singular_value_num in range(len(sigma)):
+                    if np.sum(np.square(sigma[:singular_value_num]))>energy*np.sum(np.square(sigma)):
+                        threshold=singular_value_num
+                        break
+                u=u[:, :threshold]
+                sigma=sigma[:threshold]
+                v=v[:threshold, :]
                 # support high-dimensional CNN param
                 if len(u.shape)==4:
                     u = np.transpose(u, (2, 3, 0, 1))
-                    sigma = np.transpose(sigma, (2, 0, 1))
+                    sigma = np.transpose(sigma, (1, 2, 0))
                     v = np.transpose(v, (2, 3, 0, 1))
-                threshold=0
-                if np.sum(np.square(sigma))==0:
-                    compressed_param_cpu=param_cpu
-                else:
-                    for singular_value_num in range(len(sigma)):
-                        if np.sum(np.square(sigma[:singular_value_num]))>self.energy*np.sum(np.square(sigma)):
-                            threshold=singular_value_num
-                            break
-                    u=u[:,:threshold]
-                    sigma=sigma[:threshold]
-                    v=v[:threshold,:]
-                    # support high-dimensional CNN param
-                    if len(u.shape)==4:
-                        u = np.transpose(u, (2, 3, 0, 1))
-                        sigma = np.transpose(sigma, (1, 2, 0))
-                        v = np.transpose(v, (2, 3, 0, 1))
-                    compressed_param_cpu=[u,sigma,v]
-            elif 'embeddings' not in name:
-                compressed_param_cpu=param_cpu
+                compressed_param_cpu=[u,sigma,v]
+        elif 'embeddings' not in name:
+            compressed_param_cpu=param_cpu
 
-            self.compressed_param[name] = compressed_param_cpu
-            
+        compressed_param[name] = compressed_param_cpu
+        
+    return compressed_param

@@ -3,6 +3,7 @@ import random
 import time
 from flcore.clients.clientlg import clientLG
 from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
 from threading import Thread
 
 
@@ -39,9 +40,9 @@ class LG_FedAvg(Server):
             # [t.start() for t in threads]
             # [t.join() for t in threads]
 
-            self.receive_models()
+            self.receive_ids()
             self.aggregate_parameters()
-            self.send_models()
+            self.send_parameters()
 
             self.Budget.append(time.time() - s_t)
             print('-'*25, 'time cost', '-'*25, self.Budget[-1])
@@ -57,28 +58,21 @@ class LG_FedAvg(Server):
         print(sum(self.Budget[1:])/len(self.Budget[1:]))
 
         self.save_results()
-        self.save_global_model()
 
-    def receive_models(self):
-        assert (len(self.selected_clients) > 0)
 
-        active_clients = random.sample(
-            self.selected_clients, int((1-self.client_drop_rate) * self.current_num_join_clients))
+    def aggregate_parameters(self):
+        assert (len(self.uploaded_ids) > 0)
 
-        self.uploaded_ids = []
-        self.uploaded_weights = []
-        self.uploaded_models = []
-        tot_samples = 0
-        for client in active_clients:
-            try:
-                client_time_cost = client.train_time_cost['total_cost'] / client.train_time_cost['num_rounds'] + \
-                        client.send_time_cost['total_cost'] / client.send_time_cost['num_rounds']
-            except ZeroDivisionError:
-                client_time_cost = 0
-            if client_time_cost <= self.time_threthold:
-                tot_samples += client.train_samples
-                self.uploaded_ids.append(client.id)
-                self.uploaded_weights.append(client.train_samples)
-                self.uploaded_models.append(client.model.head)
-        for i, w in enumerate(self.uploaded_weights):
-            self.uploaded_weights[i] = w / tot_samples
+        client = self.clients[self.uploaded_ids[0]]
+        head = load_item(client.role, 'model', client.save_folder_name).head
+        for param in head.parameters():
+            param.data.zero_()
+            
+        for w, cid in zip(self.uploaded_weights, self.uploaded_ids):
+            client = self.clients[cid]
+            client_model = load_item(client.role, 'model', client.save_folder_name).head
+            for server_param, client_param in zip(head.parameters(), client_model.parameters()):
+                server_param.data += client_param.data.clone() * w
+
+        save_item(head, self.role, 'head', self.save_folder_name)
+        

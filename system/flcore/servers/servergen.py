@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from flcore.clients.clientgen import clientGen
 from flcore.servers.serverbase import Server
+from flcore.clients.clientbase import load_item, save_item
 from threading import Thread
 
 
@@ -24,20 +25,17 @@ class FedGen(Server):
         # self.load_model()
         self.Budget = []
 
-        self.generative_model = Generative(
-                                    args.noise_dim, 
-                                    args.num_classes, 
-                                    args.hidden_dim, 
-                                    self.clients[0].feature_dim, 
-                                    self.device
-                                ).to(self.device)
-        self.generative_optimizer = torch.optim.Adam(
-            params=self.generative_model.parameters(),
-            lr=args.generator_learning_rate, betas=(0.9, 0.999),
-            eps=1e-08, weight_decay=0, amsgrad=False)
-        self.generative_learning_rate_scheduler = torch.optim.lr_scheduler.ExponentialLR(
-            optimizer=self.generative_optimizer, gamma=args.learning_rate_decay_gamma)
+        generative_model = Generative(
+                                args.noise_dim, 
+                                args.num_classes, 
+                                args.hidden_dim, 
+                                args.feature_dim, 
+                                self.device
+                            ).to(self.device)
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            save_item(generative_model, self.role, 'generative_model', self.save_folder_name)
         self.loss = nn.CrossEntropyLoss()
+        self.generator_learning_rate = args.generator_learning_rate
         
         self.qualified_labels = []
         for client in self.clients:
@@ -67,10 +65,10 @@ class FedGen(Server):
             # [t.start() for t in threads]
             # [t.join() for t in threads]
 
-            self.receive_models()
+            self.receive_ids()
             self.train_generator()
             self.aggregate_parameters()
-            self.send_models()
+            self.send_parameters()
 
             self.Budget.append(time.time() - s_t)
             print('-'*25, 'time cost', '-'*25, self.Budget[-1])
@@ -86,21 +84,9 @@ class FedGen(Server):
         print(sum(self.Budget[1:])/len(self.Budget[1:]))
 
         self.save_results()
-        self.save_global_model()
 
 
-    def send_models(self):
-        assert (len(self.clients) > 0)
-
-        for client in self.clients:
-            start_time = time.time()
-            
-            client.set_parameters(self.global_model, self.generative_model)
-
-            client.send_time_cost['num_rounds'] += 1
-            client.send_time_cost['total_cost'] += 2 * (time.time() - start_time)
-
-    def receive_models(self):
+    def receive_ids(self):
         assert (len(self.selected_clients) > 0)
 
         active_clients = random.sample(
@@ -111,39 +97,53 @@ class FedGen(Server):
         self.uploaded_models = []
         tot_samples = 0
         for client in active_clients:
-            try:
-                client_time_cost = client.train_time_cost['total_cost'] / client.train_time_cost['num_rounds'] + \
-                        client.send_time_cost['total_cost'] / client.send_time_cost['num_rounds']
-            except ZeroDivisionError:
-                client_time_cost = 0
-            if client_time_cost <= self.time_threthold:
-                tot_samples += client.train_samples
-                self.uploaded_ids.append(client.id)
-                self.uploaded_weights.append(client.train_samples)
-                self.uploaded_models.append(client.model.head)
+            tot_samples += client.train_samples
+            self.uploaded_ids.append(client.id)
+            self.uploaded_weights.append(client.train_samples)
+            head = load_item(client.role, 'model', client.save_folder_name).head
+            self.uploaded_models.append(head)
         for i, w in enumerate(self.uploaded_weights):
             self.uploaded_weights[i] = w / tot_samples
 
     def train_generator(self):
-        self.generative_model.train()
+        generative_model = load_item(self.role, 'generative_model', self.save_folder_name)
+        generative_optimizer = torch.optim.Adam(
+            params=generative_model.parameters(),
+            lr=self.generator_learning_rate, betas=(0.9, 0.999),
+            eps=1e-08, weight_decay=0, amsgrad=False)
+        generative_model.train()
 
         for _ in range(self.server_epochs):
             labels = np.random.choice(self.qualified_labels, self.batch_size)
             labels = torch.LongTensor(labels).to(self.device)
-            z = self.generative_model(labels)
+            z = generative_model(labels)
 
             logits = 0
             for w, model in zip(self.uploaded_weights, self.uploaded_models):
                 model.eval()
                 logits += model(z) * w
 
-            self.generative_optimizer.zero_grad()
+            generative_optimizer.zero_grad()
             loss = self.loss(logits, labels)
             loss.backward()
-            self.generative_optimizer.step()
-        
-        self.generative_learning_rate_scheduler.step()
+            generative_optimizer.step()
 
+    def aggregate_parameters(self):
+        assert (len(self.uploaded_ids) > 0)
+
+        client = self.clients[self.uploaded_ids[0]]
+        global_head = load_item(client.role, 'model', client.save_folder_name).head
+        for param in global_head.parameters():
+            param.data.zero_()
+            
+        for w, cid in zip(self.uploaded_weights, self.uploaded_ids):
+            client = self.clients[cid]
+            client_model = load_item(client.role, 'model', client.save_folder_name).head
+            for server_param, client_param in zip(global_head.parameters(), client_model.parameters()):
+                server_param.data += client_param.data.clone() * w
+
+        save_item(global_head, self.role, 'global_head', self.save_folder_name)
+        
 
 # based on official code https://github.com/zhuangdizhu/FedGen/blob/main/FLAlgorithms/trainmodel/generator.py
 class Generative(nn.Module):

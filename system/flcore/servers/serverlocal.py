@@ -45,4 +45,3 @@ class Local(Server):
         print(max(self.rs_test_acc))
 
         self.save_results()
-        self.save_global_model()
