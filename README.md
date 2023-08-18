@@ -7,7 +7,7 @@ Here, we only show the MNIST dataset in the ***label skew*** scenario generated 
 
 *You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it tasks much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
 
-**Note**: you may need to manually clean checkpoint files via `system/clean_temp_files.py`, if your program crashes accidently. 
+**Note**: you may need to manually clean checkpoint files in the `temp/` folder via `system/clean_temp_files.py`, if your program crashes accidently. You can also set a checkpoint folder by yourself to prevent automatic deletion using the `-sfn` argument in the command line. 
 
 ## Data-free algorithms with code (updating)
   
