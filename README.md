@@ -1,4 +1,4 @@
-# Heterogeneous Federated Learning
+# Heterogeneous Federated Learning (HeFL)
 Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, each client can build its own model with a specific model architecture for a specific local task. 
 
 ## Scenarios and datasets
