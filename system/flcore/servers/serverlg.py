@@ -70,8 +70,8 @@ class LG_FedAvg(Server):
             
         for w, cid in zip(self.uploaded_weights, self.uploaded_ids):
             client = self.clients[cid]
-            client_model = load_item(client.role, 'model', client.save_folder_name).head
-            for server_param, client_param in zip(head.parameters(), client_model.parameters()):
+            client_head = load_item(client.role, 'model', client.save_folder_name).head
+            for server_param, client_param in zip(head.parameters(), client_head.parameters()):
                 server_param.data += client_param.data.clone() * w
 
         save_item(head, self.role, 'head', self.save_folder_name)
