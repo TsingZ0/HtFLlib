@@ -1,13 +1,13 @@
-# Heterogeneous Federated Learning (HeFL)
-Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, each client can build its own model with a specific model architecture for a specific local task. 
+# Heterogeneous Federated Learning (HtFL)
+Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, each client can build its model with a specific model architecture for a specific local task. 
 
 ## Scenarios and datasets
 
 Here, we only show the MNIST dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my other repository [PFL-Non-IID](https://github.com/TsingZ0/PFL-Non-IID) for more help. 
 
-*You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it tasks much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
+*You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it requires much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
 
-**Note**: you may need to manually clean checkpoint files in the `temp/` folder via `system/clean_temp_files.py`, if your program crashes accidently. You can also set a checkpoint folder by yourself to prevent automatic deletion using the `-sfn` argument in the command line. 
+**Note**: you may need to manually clean checkpoint files in the `temp/` folder via `system/clean_temp_files.py` if your program crashes accidentally. You can also set a checkpoint folder by yourself to prevent automatic deletion using the `-sfn` argument in the command line. 
 
 ## Data-free algorithms with code (updating)
   
