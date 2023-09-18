@@ -21,6 +21,10 @@ class LG_FedAvg(Server):
         # self.load_model()
         self.Budget = []
 
+        head = load_item(self.clients[0].role, 'model', self.clients[0].save_folder_name).head
+        save_item(head, self.role, 'head', self.save_folder_name)
+        self.send_parameters()
+
 
     def train(self):
         for i in range(self.global_rounds+1):

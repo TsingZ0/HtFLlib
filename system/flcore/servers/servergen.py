@@ -44,6 +44,10 @@ class FedGen(Server):
         for client in self.clients:
             client.qualified_labels = self.qualified_labels
 
+        head = load_item(self.clients[0].role, 'model', self.clients[0].save_folder_name).head
+        save_item(head, self.role, 'head', self.save_folder_name)
+        self.send_parameters()
+
         self.server_epochs = args.server_epochs
         
 
@@ -132,17 +136,17 @@ class FedGen(Server):
         assert (len(self.uploaded_ids) > 0)
 
         client = self.clients[self.uploaded_ids[0]]
-        global_head = load_item(client.role, 'model', client.save_folder_name).head
-        for param in global_head.parameters():
+        head = load_item(client.role, 'model', client.save_folder_name).head
+        for param in head.parameters():
             param.data.zero_()
             
         for w, cid in zip(self.uploaded_weights, self.uploaded_ids):
             client = self.clients[cid]
             client_model = load_item(client.role, 'model', client.save_folder_name).head
-            for server_param, client_param in zip(global_head.parameters(), client_model.parameters()):
+            for server_param, client_param in zip(head.parameters(), client_model.parameters()):
                 server_param.data += client_param.data.clone() * w
 
-        save_item(global_head, self.role, 'global_head', self.save_folder_name)
+        save_item(head, self.role, 'head', self.save_folder_name)
         
 
 # based on official code https://github.com/zhuangdizhu/FedGen/blob/main/FLAlgorithms/trainmodel/generator.py
