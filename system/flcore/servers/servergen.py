@@ -44,10 +44,6 @@ class FedGen(Server):
         for client in self.clients:
             client.qualified_labels = self.qualified_labels
 
-        head = load_item(self.clients[0].role, 'model', self.clients[0].save_folder_name).head
-        save_item(head, self.role, 'head', self.save_folder_name)
-        self.send_parameters()
-
         self.server_epochs = args.server_epochs
         
 
