@@ -45,7 +45,11 @@ class Client(object):
 
         model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
 
-        head = nn.Linear(self.feature_dim, self.num_classes) # can be more personalized
+        if hasattr(args, 'heads'):
+            which_head = args.heads[self.id % len(args.heads)]
+            head = eval(which_head)
+        else:
+            head = nn.Linear(self.feature_dim, self.num_classes)
         model = BaseHeadSplit(model, head).to(self.device)
         # print(f'Client {self.id}', which_model, model)
 

@@ -20,6 +20,22 @@ class BaseHeadSplit(nn.Module):
 
         return out
 
+class Head(nn.Module):
+    def __init__(self, num_classes=10, hidden_dims=[512]):
+        super().__init__()
+        hidden_dims.append(num_classes)
+
+        layers = []
+        for idx in range(1, len(hidden_dims)):
+            layers.append(nn.Linear(hidden_dims[idx-1], hidden_dims[idx]))
+            layers.append(nn.ReLU(inplace=True))
+
+        self.fc = nn.Sequential(*layers)
+
+    def forward(self, rep):
+        out = self.fc(rep)
+        return out
+
 ###########################################################
 
 # https://github.com/jindongwang/Deep-learning-activity-recognition/blob/master/pytorch/network.py
