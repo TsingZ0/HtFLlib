@@ -156,11 +156,12 @@ class Server(object):
                 hf.create_dataset('rs_test_auc', data=self.rs_test_auc)
                 hf.create_dataset('rs_train_loss', data=self.rs_train_loss)
         
-        try:
-            shutil.rmtree(self.save_folder_name)
-            print('Deleted.')
-        except:
-            print('Already deleted.')
+        if 'temp' in self.save_folder_name:
+            try:
+                shutil.rmtree(self.save_folder_name)
+                print('Deleted.')
+            except:
+                print('Already deleted.')
 
     def test_metrics(self):        
         num_samples = []
