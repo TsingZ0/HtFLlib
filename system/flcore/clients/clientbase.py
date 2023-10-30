@@ -47,7 +47,7 @@ class Client(object):
             which_head = args.heads[self.id % len(args.heads)]
             head = eval(which_head)
         else:
-            head = copy.deepcopy(model.fc)
+            head = nn.Linear(self.feature_dim, self.num_classes)
 
         model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
         model = BaseHeadSplit(model, head).to(self.device)
