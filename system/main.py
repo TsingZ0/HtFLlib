@@ -232,7 +232,7 @@ if __name__ == "__main__":
                         help="Running times")
     parser.add_argument('-eg', "--eval_gap", type=int, default=1,
                         help="Rounds gap for evaluation")
-    parser.add_argument('-sfn', "--save_folder_name", type=str, default='items')
+    parser.add_argument('-sfn', "--save_folder_name", type=str, default='temp')
     parser.add_argument('-ab', "--auto_break", type=bool, default=False)
     parser.add_argument('-fd', "--feature_dim", type=int, default=512)
     parser.add_argument('-vs', "--vocab_size", type=int, default=98635)
