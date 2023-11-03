@@ -13,11 +13,10 @@ class clientKD(Client):
 
         self.mentee_learning_rate = args.mentee_learning_rate
 
-        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            W_h = nn.Linear(self.feature_dim, self.feature_dim, bias=False).to(self.device)
-            save_item(W_h, self.role, 'W_h', self.save_folder_name)
-            global_model = load_item('Server', 'global_model', self.save_folder_name)
-            save_item(global_model, self.role, 'global_model', self.save_folder_name)
+        W_h = nn.Linear(self.feature_dim, self.feature_dim, bias=False).to(self.device)
+        save_item(W_h, self.role, 'W_h', self.save_folder_name)
+        global_model = load_item('Server', 'global_model', self.save_folder_name)
+        save_item(global_model, self.role, 'global_model', self.save_folder_name)
 
         self.KL = nn.KLDivLoss()
         self.MSE = nn.MSELoss()

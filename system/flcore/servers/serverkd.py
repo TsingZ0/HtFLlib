@@ -26,13 +26,12 @@ emb_dim=32
 class FedKD(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
-        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            global_model = eval(args.models[0])
-            global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
-            head = nn.Linear(args.feature_dim, args.num_classes)
-            global_model = BaseHeadSplit(global_model, head).to(args.device)
-            
-            save_item(global_model, self.role, 'global_model', self.save_folder_name)
+        global_model = eval(args.models[0])
+        global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
+        head = nn.Linear(args.feature_dim, args.num_classes)
+        global_model = BaseHeadSplit(global_model, head).to(args.device)
+        
+        save_item(global_model, self.role, 'global_model', self.save_folder_name)
         
         # select slow clients
         self.set_slow_clients()
