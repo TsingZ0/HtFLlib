@@ -32,7 +32,8 @@ class FedGen(Server):
                                 args.feature_dim, 
                                 self.device
                             ).to(self.device)
-        save_item(generative_model, self.role, 'generative_model', self.save_folder_name)
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            save_item(generative_model, self.role, 'generative_model', self.save_folder_name)
         self.loss = nn.CrossEntropyLoss()
         self.generator_learning_rate = args.generator_learning_rate
         
