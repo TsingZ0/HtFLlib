@@ -14,6 +14,7 @@ from flcore.servers.serverdistill import FedDistill
 from flcore.servers.serverlg import LG_FedAvg
 from flcore.servers.serverfml import FML
 from flcore.servers.serverkd import FedKD
+from flcore.servers.servergh import FedGH
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
@@ -179,6 +180,9 @@ def run(args):
 
         elif args.algorithm == "FedKD":
             server = FedKD(args, i)
+
+        elif args.algorithm == "FedGH":
+            server = FedGH(args, i)
             
         else:
             raise NotImplementedError
@@ -262,6 +266,8 @@ if __name__ == "__main__":
     parser.add_argument('-mlr', "--mentee_learning_rate", type=float, default=0.005)
     parser.add_argument('-Ts', "--T_start", type=float, default=0.95)
     parser.add_argument('-Te', "--T_end", type=float, default=0.98)
+    # FedGH
+    parser.add_argument('-slr', "--server_learning_rate", type=float, default=0.01)
 
 
     args = parser.parse_args()
