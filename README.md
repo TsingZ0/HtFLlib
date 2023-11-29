@@ -3,9 +3,9 @@ Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcm
 
 ## Scenarios and datasets
 
-Here, we only show the MNIST dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my other repository [PFL-Non-IID](https://github.com/TsingZ0/PFL-Non-IID) for more help. 
+Here, we only show the MNIST dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my other repository [PFLlib](https://github.com/TsingZ0/PFLlib) for more help. 
 
-*You can also modify codes in PFL-Non-IID to support model heterogeneity scenarios, but it requires much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
+*You can also modify codes in PFLlib to support model heterogeneity scenarios, but it requires much effort. In this repository, you only need to configure `system/main.py` to support model heterogeneity scenarios.*
 
 **Note**: you may need to manually clean checkpoint files in the `temp/` folder via `system/clean_temp_files.py` if your program crashes accidentally. You can also set a checkpoint folder by yourself to prevent automatic deletion using the `-sfn` argument in the command line. 
 
