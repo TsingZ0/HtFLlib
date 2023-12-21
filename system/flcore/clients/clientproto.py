@@ -75,8 +75,6 @@ class clientProto(Client):
 
         test_acc = 0
         test_num = 0
-
-        test_acc1 = 0
         
         if global_protos is not None:
             with torch.no_grad():
@@ -97,12 +95,9 @@ class clientProto(Client):
                     test_acc += (torch.sum(torch.argmin(output, dim=1) == y)).item()
                     test_num += y.shape[0]
 
-                    output1 = model.head(rep)
-                    test_acc1 += (torch.sum(torch.argmax(output1, dim=1) == y)).item()
-
-            return (test_acc, test_acc1), test_num, 0
+            return test_acc, test_num, 0
         else:
-            return (0, 0), 1e-5, 0
+            return 0, 1e-5, 0
 
     def train_metrics(self):
         trainloader = self.load_train_data()

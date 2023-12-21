@@ -22,7 +22,6 @@ class FedProto(Server):
         # self.load_model()
         self.Budget = []
         self.num_classes = args.num_classes
-        self.rs_test_acc_cla = []
 
 
     def train(self):
@@ -48,14 +47,13 @@ class FedProto(Server):
             self.Budget.append(time.time() - s_t)
             print('-'*50, self.Budget[-1])
 
-            if self.auto_break and self.check_done(acc_lss=[self.rs_test_acc, self.rs_test_acc_cla], top_cnt=self.top_cnt):
+            if self.auto_break and self.check_done(acc_lss=[self.rs_test_acc], top_cnt=self.top_cnt):
                 break
 
         print("\nBest accuracy.")
         # self.print_(max(self.rs_test_acc), max(
         #     self.rs_train_acc), min(self.rs_train_loss))
         print(max(self.rs_test_acc))
-        print(max(self.rs_test_acc_cla))
         print(sum(self.Budget[1:])/len(self.Budget[1:]))
 
         self.save_results()
@@ -73,51 +71,6 @@ class FedProto(Server):
             
         global_protos = proto_aggregation(uploaded_protos)
         save_item(global_protos, self.role, 'global_protos', self.save_folder_name)
-
-    def test_metrics(self):
-        num_samples = []
-        tot_correct = []
-        tot_correct1 = []
-        tot_auc = []
-        for c in self.clients:
-            ct, ns, auc = c.test_metrics()
-            tot_correct.append(ct[0]*1.0)
-            tot_correct1.append(ct[1]*1.0)
-            print(f'Client {c.id}: Acc: {ct[0]*1.0/ns}, AUC: {auc}')
-            tot_auc.append(auc*ns)
-            num_samples.append(ns)
-
-        ids = [c.id for c in self.clients]
-
-        return ids, num_samples, (tot_correct, tot_correct1), tot_auc
-
-    def evaluate(self, acc=None, loss=None):
-        stats = self.test_metrics()
-        # stats_train = self.train_metrics()
-
-        test_acc = sum(stats[2][0])*1.0 / sum(stats[1])
-        test_acc1 = sum(stats[2][1])*1.0 / sum(stats[1])
-        # train_loss = sum(stats_train[2])*1.0 / sum(stats_train[1])
-        accs = [a / n for a, n in zip(stats[2][0], stats[1])]
-        accs1 = [a / n for a, n in zip(stats[2][1], stats[1])]
-        
-        if acc == None:
-            self.rs_test_acc.append(test_acc)
-            self.rs_test_acc_cla.append(test_acc1)
-        else:
-            acc.append(test_acc)
-        
-        # if loss == None:
-        #     self.rs_train_loss.append(train_loss)
-        # else:
-        #     loss.append(train_loss)
-
-        # print("Averaged Train Loss: {:.4f}".format(train_loss))
-        print("Averaged Test Accurancy: {:.4f}".format(test_acc))
-        print("Averaged Test Accurancy of Classifier: {:.4f}".format(test_acc1))
-        # self.print_(test_acc, train_acc, train_loss)
-        print("Std Test Accurancy: {:.4f}".format(np.std(accs)))
-        print("Std Test Accurancy of Classifier: {:.4f}".format(np.std(accs1)))
     
 
 # https://github.com/yuetan031/fedproto/blob/main/lib/utils.py#L221
