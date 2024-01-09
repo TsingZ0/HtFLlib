@@ -21,3 +21,6 @@ Here, we only show the MNIST dataset in the ***label skew*** scenario generated 
 - **FedGH** — [FedGH: Heterogeneous Federated Learning with Generalized Global Header](https://dl.acm.org/doi/10.1145/3581783.3611781) *ACM MM 2023*
 - **FedTGP** — [FedTGP: Trainable Global Prototypes with Adaptive-Margin-Enhanced Contrastive Learning for Data and Model Heterogeneity in Federated Learning](https://arxiv.org/abs/2401.03230) *AAAI 2024*
 
+## Experimental results
+
+If you are interested in **the experimental results (e.g., the accuracy) of above algorithms**, you can find some results in our accepted FL paper (i.e., [FedTGP](https://github.com/TsingZ0/FedTGP)). *Please note that this developing project may not be able to reproduce the results on these papers, since some basic settings may change due to the requests of the community.* 
