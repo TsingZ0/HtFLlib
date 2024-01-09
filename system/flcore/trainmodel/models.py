@@ -38,6 +38,58 @@ class Head(nn.Module):
 
 ###########################################################
 
+class CNN(nn.Module):
+    def __init__(self, in_features=1, num_classes=10, height=28, 
+                 num_cov=2, feature_dim=512, hidden_dims=[]):
+        super().__init__()
+        convs = [nn.Sequential(
+                    nn.Conv2d(in_features,
+                        32,
+                        kernel_size=5,
+                        padding=0,
+                        stride=1,
+                        bias=True),
+                    nn.ReLU(inplace=True), 
+                    nn.MaxPool2d(kernel_size=(2, 2))
+                )]
+        height = int(height - 5 + 1)
+        height = int((height - 2) / 2 + 1)
+        i=-1
+        for i in range(num_cov-1):
+            convs.append(nn.Sequential(
+                            nn.Conv2d(2**(i+5),
+                                2**(i+6),
+                                kernel_size=5,
+                                padding=0,
+                                stride=1,
+                                bias=True),
+                            nn.ReLU(inplace=True), 
+                            nn.MaxPool2d(kernel_size=(2, 2))
+                        ))
+            height = int(height - 5 + 1)
+            height = int((height - 2) / 2 + 1)
+        self.conv = nn.Sequential(*convs)
+        
+        hidden_dims.append(feature_dim)
+
+        layers = [nn.Flatten()]
+        for idx in range(len(hidden_dims)):
+            if len(layers) == 1:
+                layers.append(nn.Linear(height ** 2 * 2**(i+6), hidden_dims[idx]))
+                layers.append(nn.ReLU(inplace=True))
+            else:
+                layers.append(nn.Linear(hidden_dims[idx-1], hidden_dims[idx]))
+                layers.append(nn.ReLU(inplace=True))
+
+        self.fc1 = nn.Sequential(*layers)
+        self.fc = nn.Linear(512, num_classes)
+
+    def forward(self, x):
+        out = self.conv(x)
+        out = self.fc1(out)
+        out = self.fc(out)
+        return out
+
 # https://github.com/jindongwang/Deep-learning-activity-recognition/blob/master/pytorch/network.py
 class HARCNN(nn.Module):
     def __init__(self, in_channels=9, dim_hidden=64*26, num_classes=6, conv_kernel_size=(1, 9), pool_kernel_size=(1, 2)):
