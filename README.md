@@ -1,4 +1,4 @@
-# Heterogeneous Federated Learning (HtFL)
+# Heterogeneous Federated Learning Library (HtFLlib)
 Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, clients can build their models with ***heterogeneous model architectures*** for specific local tasks. 
 
 ## Scenarios and datasets
