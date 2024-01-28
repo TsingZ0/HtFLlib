@@ -281,7 +281,7 @@ if __name__ == "__main__":
     parser.add_argument('-nd', "--noise_dim", type=int, default=512)
     parser.add_argument('-glr', "--generator_learning_rate", type=float, default=0.005)
     parser.add_argument('-hd', "--hidden_dim", type=int, default=512)
-    parser.add_argument('-se', "--server_epochs", type=int, default=1000)
+    parser.add_argument('-se', "--server_epochs", type=int, default=100)
     # FML
     parser.add_argument('-al', "--alpha", type=float, default=1.0)
     parser.add_argument('-bt', "--beta", type=float, default=1.0)
