@@ -78,8 +78,7 @@ class FML(Server):
     def aggregate_parameters(self):
         assert (len(self.uploaded_ids) > 0)
 
-        client = self.clients[self.uploaded_ids[0]]
-        global_model = load_item(client.role, 'global_model', client.save_folder_name)
+        global_model = load_item(self.role, 'global_model', self.save_folder_name)
         for param in global_model.parameters():
             param.data.zero_()
             
