@@ -45,12 +45,16 @@ class FedGen(Server):
             client.qualified_labels = self.qualified_labels
 
         self.server_epochs = args.server_epochs
+
+        head = load_item(self.clients[0].role, 'model', self.clients[0].save_folder_name).head
+        save_item(head, self.role, 'head', self.save_folder_name)
         
 
     def train(self):
         for i in range(self.global_rounds+1):
             s_t = time.time()
             self.selected_clients = self.select_clients()
+            self.send_parameters()
 
             if i%self.eval_gap == 0:
                 print(f"\n-------------Round number: {i}-------------")
@@ -68,7 +72,6 @@ class FedGen(Server):
             self.receive_ids()
             self.train_generator()
             self.aggregate_parameters()
-            self.send_parameters()
 
             self.Budget.append(time.time() - s_t)
             print('-'*25, 'time cost', '-'*25, self.Budget[-1])

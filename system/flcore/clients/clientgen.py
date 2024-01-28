@@ -65,9 +65,8 @@ class clientGen(Client):
     def set_parameters(self):
         model = load_item(self.role, 'model', self.save_folder_name)
         head = load_item('Server', 'head', self.save_folder_name)
-        if head is not None:
-            for new_param, old_param in zip(head.parameters(), model.head.parameters()):
-                old_param.data = new_param.data.clone()
+        for new_param, old_param in zip(head.parameters(), model.head.parameters()):
+            old_param.data = new_param.data.clone()
         save_item(model, self.role, 'model', self.save_folder_name)
 
     def train_metrics(self):

@@ -25,7 +25,7 @@ class FedGH(Server):
         self.server_learning_rate = args.server_learning_rate
         self.server_epochs = args.server_epochs
 
-        head = load_item('Client_0', 'model', self.save_folder_name).head
+        head = load_item(self.clients[0].role, 'model', self.clients[0].save_folder_name).head
         save_item(head, 'Server', 'head', self.save_folder_name)
 
 
