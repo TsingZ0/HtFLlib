@@ -12,6 +12,7 @@ class clientKD(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
         self.mentee_learning_rate = args.mentee_learning_rate
+        self.energy = args.T_start
 
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
             W_h = nn.Linear(self.feature_dim, self.feature_dim, bias=False).to(self.device)
@@ -80,6 +81,8 @@ class clientKD(Client):
         save_item(model, self.role, 'model', self.save_folder_name)
         save_item(global_model, self.role, 'global_model', self.save_folder_name)
         save_item(W_h, self.role, 'W_h', self.save_folder_name)
+        compressed_param = decomposition(global_model.named_parameters(), self.energy)
+        save_item(compressed_param, self.role, 'compressed_param', self.save_folder_name)
 
         self.train_time_cost['num_rounds'] += 1
         self.train_time_cost['total_cost'] += time.time() - start_time
@@ -88,10 +91,10 @@ class clientKD(Client):
     def set_parameters(self):
         global_model = load_item(self.role, 'global_model', self.save_folder_name)
         compressed_param = load_item('Server', 'compressed_param', self.save_folder_name)
-        compressed_param = recover(compressed_param)
+        param = recover(compressed_param)
         for name, old_param in global_model.named_parameters():
-            if name in compressed_param:
-                old_param.data = torch.tensor(compressed_param[name], device=self.device).data.clone()
+            if name in param:
+                old_param.data = torch.tensor(param[name], device=self.device).data.clone()
         save_item(global_model, self.role, 'global_model', self.save_folder_name)
 
     def train_metrics(self):
@@ -135,4 +138,44 @@ def recover(compressed_param):
             compressed_param[k] = np.matmul(
                 compressed_param[k][0] * compressed_param[k][1][..., None, :], 
                     compressed_param[k][2])
+    return compressed_param
+
+    
+def decomposition(param_iter, energy):
+    compressed_param = {}
+    for name, param in param_iter:
+        try:
+            param_cpu = param.detach().cpu().numpy()
+        except:
+            param_cpu = param
+        # refer to https://github.com/wuch15/FedKD/blob/main/run.py#L187
+        if len(param_cpu.shape)>1 and 'embeddings' not in name:
+            u, sigma, v = np.linalg.svd(param_cpu, full_matrices=False)
+            # support high-dimensional CNN param
+            if len(u.shape)==4:
+                u = np.transpose(u, (2, 3, 0, 1))
+                sigma = np.transpose(sigma, (2, 0, 1))
+                v = np.transpose(v, (2, 3, 0, 1))
+            threshold=0
+            if np.sum(np.square(sigma))==0:
+                compressed_param_cpu=param_cpu
+            else:
+                for singular_value_num in range(len(sigma)):
+                    if np.sum(np.square(sigma[:singular_value_num]))>energy*np.sum(np.square(sigma)):
+                        threshold=singular_value_num
+                        break
+                u=u[:, :threshold]
+                sigma=sigma[:threshold]
+                v=v[:threshold, :]
+                # support high-dimensional CNN param
+                if len(u.shape)==4:
+                    u = np.transpose(u, (2, 3, 0, 1))
+                    sigma = np.transpose(sigma, (1, 2, 0))
+                    v = np.transpose(v, (2, 3, 0, 1))
+                compressed_param_cpu=[u,sigma,v]
+        elif 'embeddings' not in name:
+            compressed_param_cpu=param_cpu
+
+        compressed_param[name] = compressed_param_cpu
+        
     return compressed_param
