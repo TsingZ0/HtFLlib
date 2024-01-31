@@ -13,7 +13,7 @@ Here, we only show the MNIST dataset in the ***label skew*** scenario generated 
 Here, "data-free" refers to the absence of any additional dataset beyond the clients' private data.
 
 - **Local** — Each client trains its model locally without federation.
-- **FedDistill** — [Federated Knowledge Distillation](https://www.cambridge.org/core/books/abs/machine-learning-and-wireless-communications/federated-knowledge-distillation/F679266F85493319EB83635D2B17C2BD#access-block) *2020*
+- **FedDistill** — [Federated Knowledge Distillation](https://arxiv.org/pdf/1811.11479.pdf) *2020*
 - **FML** — [Federated Mutual Learning](https://arxiv.org/abs/2006.16765) *2020*
 - **LG-FedAvg** — [Think Locally, Act Globally: Federated Learning with Local and Global Representations](https://arxiv.org/abs/2001.01523) *2020*
 - **FedGen** — [Data-Free Knowledge Distillation for Heterogeneous Federated Learning](http://proceedings.mlr.press/v139/zhu21b.html) *ICML 2021*
