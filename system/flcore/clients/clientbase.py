@@ -38,8 +38,6 @@ class Client(object):
         self.learning_rate = args.local_learning_rate
         self.local_epochs = args.local_epochs
 
-        self.feature_dim = args.feature_dim
-
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
             which_model = args.models[self.id % len(args.models)]
             model = eval(which_model).to(self.device)

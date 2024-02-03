@@ -21,6 +21,7 @@ class clientTGP(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
 
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            self.feature_dim = args.feature_dim
             model = load_item(self.role, 'model', self.save_folder_name)
             if hasattr(args, 'heads'):
                 which_head = args.heads[self.id % len(args.heads)]
