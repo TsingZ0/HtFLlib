@@ -40,25 +40,10 @@ class Client(object):
 
         self.feature_dim = args.feature_dim
 
-        which_model = args.models[self.id % len(args.models)]
-        model = eval(which_model).to(self.device)
-
-        if hasattr(args, 'heads'):
-            which_head = args.heads[self.id % len(args.heads)]
-            head = eval(which_head)
-        else:
-            head = nn.Linear(self.feature_dim, self.num_classes)
-
-        model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
-        model = BaseHeadSplit(model, head).to(self.device)
-        # print(f'Client {self.id}', which_model, model)
-
-        # check BatchNorm
-        self.has_BatchNorm = False
-        for layer in model.children():
-            if isinstance(layer, nn.BatchNorm2d):
-                self.has_BatchNorm = True
-                break
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            which_model = args.models[self.id % len(args.models)]
+            model = eval(which_model).to(self.device)
+            save_item(model, self.role, 'model', self.save_folder_name)
 
         self.train_slow = kwargs['train_slow']
         self.send_slow = kwargs['send_slow']
@@ -66,9 +51,6 @@ class Client(object):
         self.send_time_cost = {'num_rounds': 0, 'total_cost': 0.0}
 
         self.loss = nn.CrossEntropyLoss()
-
-        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            save_item(model, self.role, 'model', self.save_folder_name)
 
 
     def load_train_data(self, batch_size=None):

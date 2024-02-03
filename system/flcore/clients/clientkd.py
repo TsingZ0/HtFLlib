@@ -6,10 +6,32 @@ import time
 import torch.nn.functional as F
 from flcore.clients.clientbase import Client, load_item, save_item
 
+import torchvision
+from flcore.trainmodel.models import *
+
+from flcore.trainmodel.bilstm import *
+from flcore.trainmodel.resnet import *
+from flcore.trainmodel.alexnet import *
+from flcore.trainmodel.mobilenet_v2 import *
+from flcore.trainmodel.transformer import *
+
 
 class clientKD(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
+
+        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
+            model = load_item(self.role, 'model', self.save_folder_name)
+            if hasattr(args, 'heads'):
+                which_head = args.heads[self.id % len(args.heads)]
+                head = eval(which_head)
+            else:
+                head = nn.Linear(self.feature_dim, self.num_classes)
+
+            model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
+            model = BaseHeadSplit(model, head).to(self.device)
+            # print(f'Client {self.id}', which_model, model)
+            save_item(model, self.role, 'model', self.save_folder_name)
 
         self.mentee_learning_rate = args.mentee_learning_rate
         self.energy = args.T_start
