@@ -145,11 +145,11 @@ def run(args):
 
         elif args.model_family == "NLP_Transformers":
             args.models = [
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=4, num_classes=args.num_classes, max_len=args.max_len)'
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=8, num_classes=args.num_classes, max_len=args.max_len)'
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=16, num_classes=args.num_classes, max_len=args.max_len)'
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=32, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=4, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=8, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=16, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=32, num_classes=args.num_classes, max_len=args.max_len)',
             ]
 
         elif args.model_family == "MLPs":
