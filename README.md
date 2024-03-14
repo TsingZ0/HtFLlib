@@ -10,7 +10,7 @@ Here, we only show the MNIST dataset in the ***label skew*** scenario generated 
 **Note**: you may need to manually clean checkpoint files in the `temp/` folder via `system/clean_temp_files.py` if your program crashes accidentally. You can also set a checkpoint folder by yourself to prevent automatic deletion using the `-sfn` argument in the command line. 
 
 ## Data-free algorithms with code (updating)
-Here, "data-free" refers to the absence of any additional dataset beyond the clients' private data.
+Here, "data-free" refers to the absence of any additional dataset beyond the clients' private data. We only consider data-free algorithms here, as they have fewer restrictions and assumptions, making them more valuable and easily extendable to other scenarios, such as the existence of public server data. 
 
 - **Local** — Each client trains its model locally without federation.
 - **FedDistill** — [Federated Knowledge Distillation](https://arxiv.org/pdf/1811.11479.pdf) *2020*
