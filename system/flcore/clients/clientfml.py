@@ -10,6 +10,7 @@ from flcore.clients.clientbase import Client, load_item, save_item
 class clientFML(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
+        torch.manual_seed(0)
 
         self.alpha = args.alpha
         self.beta = args.beta

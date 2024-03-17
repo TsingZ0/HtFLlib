@@ -17,6 +17,7 @@ from flcore.trainmodel.transformer import *
 class clientGen(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
+        torch.manual_seed(0)
 
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
             self.feature_dim = args.feature_dim

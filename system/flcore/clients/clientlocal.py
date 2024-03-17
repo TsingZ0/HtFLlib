@@ -8,6 +8,7 @@ from flcore.clients.clientbase import Client, load_item, save_item
 class clientLocal(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
+        torch.manual_seed(0)
 
     def train(self):
         trainloader = self.load_train_data()

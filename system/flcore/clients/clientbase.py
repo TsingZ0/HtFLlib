@@ -24,6 +24,7 @@ class Client(object):
     """
 
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
+        torch.manual_seed(0)
         self.algorithm = args.algorithm
         self.dataset = args.dataset
         self.device = args.device
