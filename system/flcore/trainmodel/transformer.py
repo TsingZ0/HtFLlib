@@ -49,7 +49,6 @@ class TransformerModel(nn.Module):
         self.fc.weight.data.uniform_(-initrange, initrange)
 
     def forward(self, src: Tensor, src_mask: Tensor = None) -> Tensor:
-        src, src_lengths = src
         """
         Args:
             src: Tensor, shape [seq_len, batch_size]
@@ -58,6 +57,7 @@ class TransformerModel(nn.Module):
         Returns:
             output Tensor of shape [seq_len, batch_size, ntoken]
         """
+        src, src_lengths = src
         src = self.embedding(src) * math.sqrt(self.d_model)
         src = self.pos_encoder(src)
         enc = self.transformer_encoder(src, src_mask).mean(1)
