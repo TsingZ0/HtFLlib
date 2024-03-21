@@ -16,6 +16,7 @@ from flcore.servers.serverfml import FML
 from flcore.servers.serverkd import FedKD
 from flcore.servers.servergh import FedGH
 from flcore.servers.servertgp import FedTGP
+from flcore.servers.serverktl_stylegan_xl import FedKTL 
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
@@ -127,6 +128,28 @@ def run(args):
                 'CNN(num_cov=2, hidden_dims=[1024, 512], in_features=1, num_classes=args.num_classes)', 
             ]
 
+        elif args.model_family == "ViTs":
+            args.models = [
+                'torchvision.models.vit_b_16(image_size=32, num_classes=args.num_classes)', 
+                'torchvision.models.vit_b_32(image_size=32, num_classes=args.num_classes)',
+                'torchvision.models.vit_l_16(image_size=32, num_classes=args.num_classes)',
+                'torchvision.models.vit_l_32(image_size=32, num_classes=args.num_classes)',
+            ]
+
+        elif args.model_family == "HtM10":
+            args.models = [
+                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
+                'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
+                'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet101(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.vit_b_16(image_size=32, num_classes=args.num_classes)', 
+                'torchvision.models.vit_b_32(image_size=32, num_classes=args.num_classes)'
+            ]
+
         elif args.model_family == "NLP_all":
             args.models = [
                 'fastText(hidden_dim=args.feature_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
@@ -206,6 +229,9 @@ def run(args):
 
         elif args.algorithm == "FedTGP":
             server = FedTGP(args, i)
+
+        elif args.algorithm == "FedKTL":
+            server = FedKTL(args, i)
             
         else:
             raise NotImplementedError
@@ -293,6 +319,13 @@ if __name__ == "__main__":
     parser.add_argument('-slr', "--server_learning_rate", type=float, default=0.01)
     # FedTGP
     parser.add_argument('-mart', "--margin_threthold", type=float, default=100.0)
+    # FedKTL
+    parser.add_argument('-GPath', "--generator_path", type=str, default='stylegan/stylegan-xl-models/imagenet64.pkl')
+    parser.add_argument('-prompt', "--stable_diffusion_prompt", type=str, default='a cat')
+    parser.add_argument('-sbs', "--server_batch_size", type=int, default=100)
+    parser.add_argument('-gbs', "--gen_batch_size", type=int, default=4,
+                        help="Not related to the performance. A small value saves GPU memory.")
+    parser.add_argument('-mu', "--mu", type=float, default=50.0)
 
 
     args = parser.parse_args()
