@@ -21,7 +21,8 @@ Here, "data-free" refers to the absence of any additional dataset beyond the cli
 - **FedKD** — [Communication-efficient federated learning via knowledge distillation](https://www.nature.com/articles/s41467-022-29763-x) *Nature Communications 2022*
 - **FedGH** — [FedGH: Heterogeneous Federated Learning with Generalized Global Header](https://dl.acm.org/doi/10.1145/3581783.3611781) *ACM MM 2023*
 - **FedTGP** — [FedTGP: Trainable Global Prototypes with Adaptive-Margin-Enhanced Contrastive Learning for Data and Model Heterogeneity in Federated Learning](https://arxiv.org/abs/2401.03230) *AAAI 2024*
+- **FedKTL** — [An Upload-Efficient Scheme for Transferring Knowledge From a Server-Side Pre-trained Generator to Clients in Heterogeneous Federated Learning](https://arxiv.org/abs/2403.15760) *CVPR 2024* *(Note: FedKTL requires pre-trained generators and other resources to run, please refer to its [project page](https://github.com/TsingZ0/FedKTL) for more details.)*
 
 ## Experimental results
 
-If you are interested in **the experimental results (e.g., the accuracy) of the above algorithms**, you can find some results in our accepted FL paper (i.e., [FedTGP](https://github.com/TsingZ0/FedTGP)). *Please note that this developing project may not be able to reproduce the results on these papers, since some basic settings may change due to the requests of the community.* 
+If you are interested in **the experimental results (e.g., the accuracy) of the above algorithms**, you can find some results in our accepted FL paper (i.e., [FedTGP](https://github.com/TsingZ0/FedTGP) and [FedKTL](https://github.com/TsingZ0/FedKTL)). *Please note that this developing project may not be able to reproduce the results on these papers, since some basic settings may change due to the requests of the community.* 
