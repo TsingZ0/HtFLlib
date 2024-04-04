@@ -173,7 +173,7 @@ def decomposition(param_iter, energy):
         except:
             param_cpu = param
         # refer to https://github.com/wuch15/FedKD/blob/main/run.py#L187
-        if len(param_cpu.shape)>1 and 'embeddings' not in name:
+        if param_cpu.shape[0]>1 and len(param_cpu.shape)>1 and 'embeddings' not in name:
             u, sigma, v = np.linalg.svd(param_cpu, full_matrices=False)
             # support high-dimensional CNN param
             if len(u.shape)==4:
