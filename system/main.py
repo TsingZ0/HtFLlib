@@ -156,23 +156,23 @@ def run(args):
                 'LSTMNet(hidden_dim=args.feature_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
                 'BiLSTM_TextClassification(input_size=args.vocab_size, hidden_size=args.feature_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=args.feature_dim)', 
                 'TextCNN(hidden_dim=args.feature_dim, max_len=args.max_len, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
             ]
 
         elif args.model_family == "NLP_popular":
             args.models = [
                 'LSTMNet(hidden_dim=args.feature_dim, vocab_size=args.vocab_size, num_classes=args.num_classes)', 
                 'BiLSTM_TextClassification(input_size=args.vocab_size, hidden_size=args.feature_dim, output_size=args.num_classes, num_layers=1, embedding_dropout=0, lstm_dropout=0, attention_dropout=0, embedding_length=args.feature_dim)', 
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)'
             ]
 
         elif args.model_family == "NLP_Transformers":
             args.models = [
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)',
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=4, num_classes=args.num_classes, max_len=args.max_len)',
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=8, num_classes=args.num_classes, max_len=args.max_len)',
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=16, num_classes=args.num_classes, max_len=args.max_len)',
-                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, d_hid=args.feature_dim, nlayers=32, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=2, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=4, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=8, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=16, num_classes=args.num_classes, max_len=args.max_len)',
+                'TransformerModel(ntoken=args.vocab_size, d_model=args.feature_dim, nhead=8, nlayers=32, num_classes=args.num_classes, max_len=args.max_len)',
             ]
 
         elif args.model_family == "MLPs":
