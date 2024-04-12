@@ -8,15 +8,7 @@ from torch.utils.data import DataLoader
 from sklearn.preprocessing import label_binarize
 from sklearn import metrics
 from utils.data_utils import read_client_data
-
-import torchvision
-from flcore.trainmodel.models import *
-
-from flcore.trainmodel.bilstm import *
-from flcore.trainmodel.resnet import *
-from flcore.trainmodel.alexnet import *
-from flcore.trainmodel.mobilenet_v2 import *
-from flcore.trainmodel.transformer import *
+from flcore.trainmodel.models import BaseHeadSplit
 
 class Client(object):
     """
@@ -40,8 +32,7 @@ class Client(object):
         self.local_epochs = args.local_epochs
 
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            which_model = args.models[self.id % len(args.models)]
-            model = eval(which_model).to(self.device)
+            model = BaseHeadSplit(args, self.id).to(self.device)
             save_item(model, self.role, 'model', self.save_folder_name)
 
         self.train_slow = kwargs['train_slow']

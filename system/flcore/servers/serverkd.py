@@ -7,31 +7,14 @@ from flcore.clients.clientkd import clientKD, recover, decomposition
 from flcore.servers.serverbase import Server
 from flcore.clients.clientbase import load_item, save_item
 from threading import Thread
-
-import torchvision
-from flcore.trainmodel.models import *
-
-from flcore.trainmodel.bilstm import *
-from flcore.trainmodel.resnet import *
-from flcore.trainmodel.alexnet import *
-from flcore.trainmodel.mobilenet_v2 import *
-from flcore.trainmodel.transformer import *
-
-# hyper-params for Text tasks
-vocab_size = 98635
-max_len=200
-emb_dim=32
+from flcore.trainmodel.models import BaseHeadSplit
 
 
 class FedKD(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            global_model = eval(args.models[0])
-            global_model.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
-            head = nn.Linear(args.feature_dim, args.num_classes)
-            global_model = BaseHeadSplit(global_model, head).to(args.device)
-            
+            global_model = BaseHeadSplit(args, 0).to(args.device)            
             save_item(global_model, self.role, 'global_model', self.save_folder_name)
         
         # select slow clients

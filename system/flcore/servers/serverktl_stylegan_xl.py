@@ -13,17 +13,16 @@ from threading import Thread
 from collections import defaultdict
 from torch.utils.data import DataLoader
 
+import PIL.Image
 import sys
 import os
-
 # Get the parent directory
-torch_utils_dir = os.path.dirname(os.path.realpath('stylegan/stylegan-xl-utils/torch_utils'))
-dnnlib_dir = os.path.dirname(os.path.realpath('stylegan/stylegan-xl-utils/dnnlib'))
+torch_utils_dir = os.path.dirname(os.path.realpath('stylegan/stylegan-utils/torch_utils'))
+dnnlib_dir = os.path.dirname(os.path.realpath('stylegan/stylegan-utils/dnnlib'))
 # Add the parent directory to sys.path
 sys.path.append(torch_utils_dir)
 sys.path.append(dnnlib_dir)
 from torch_utils import gen_utils
-import PIL.Image
 
 
 class FedKTL(Server):

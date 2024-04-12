@@ -1,23 +1,45 @@
 import math
 import torch
 import torch.nn.functional as F
+import torchvision
 from torch import nn, Tensor
-
-batch_size = 10
+from flcore.trainmodel.bilstm import *
+from flcore.trainmodel.resnet import *
+from flcore.trainmodel.alexnet import *
+from flcore.trainmodel.mobilenet_v2 import *
+from flcore.trainmodel.transformer import *
 
 
 # split an original model into a base and a head
 class BaseHeadSplit(nn.Module):
-    def __init__(self, base, head):
-        super(BaseHeadSplit, self).__init__()
+    def __init__(self, args, cid):
+        super().__init__()
 
-        self.base = base
-        self.head = head
+        self.base = eval(args.models[cid % len(args.models)])
+        head = None
+        if hasattr(self.base, 'heads'):
+            head = self.base.heads
+            self.base.heads = nn.AdaptiveAvgPool1d(args.feature_dim)
+        elif hasattr(self.base, 'head'):
+            head = self.base.head
+            self.base.head = nn.AdaptiveAvgPool1d(args.feature_dim)
+        elif hasattr(self.base, 'fc'):
+            head = self.base.fc
+            self.base.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
+        elif hasattr(self.base, 'classifier'):
+            head = self.base.classifier
+            self.base.classifier = nn.AdaptiveAvgPool1d(args.feature_dim)
+        else:
+            raise('The base model does not have a classification head.')
+
+        if hasattr(args, 'heads'):
+            self.head = eval(args.heads[cid % len(args.heads)])
+        else:
+            self.head = nn.Linear(args.feature_dim, args.num_classes)
         
     def forward(self, x):
         out = self.base(x)
         out = self.head(out)
-
         return out
 
 class Head(nn.Module):
@@ -272,34 +294,6 @@ class FedAvgMLP(nn.Module):
 
 # ====================================================================================================================
 
-class Net(nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, batch_size, 2, 1)
-        self.conv2 = nn.Conv2d(batch_size, 32, 2, 1)
-        self.dropout1 = nn.Dropout(0.25)
-        self.dropout2 = nn.Dropout(0.5)
-        self.fc1 = nn.Linear(18432, 128)
-        self.fc = nn.Linear(128, 10)
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = nn.ReLU()(x)
-        x = nn.MaxPool2d(2, 1)(x)
-        x = self.dropout1(x)
-        x = self.conv2(x)
-        x = nn.ReLU()(x)
-        x = nn.MaxPool2d(2, 1)(x)
-        x = self.dropout2(x)
-        x = torch.flatten(x, 1)
-        x = self.fc1(x)
-        x = nn.ReLU()(x)
-        x = self.fc(x)
-        output = F.log_softmax(x, dim=1)
-        return output
-
-# ====================================================================================================================
-
 class Mclr_Logistic(nn.Module):
     def __init__(self, input_dim=1*28*28, num_classes=10):
         super(Mclr_Logistic, self).__init__()
@@ -322,28 +316,6 @@ class DNN(nn.Module):
     def forward(self, x):
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
-        x = self.fc(x)
-        x = F.log_softmax(x, dim=1)
-        return x
-
-# ====================================================================================================================
-
-class CifarNet(nn.Module):
-    def __init__(self, num_classes=10):
-        super(CifarNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, batch_size, 5)
-        self.fc1 = nn.Linear(batch_size * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc = nn.Linear(84, num_classes)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, batch_size * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
         return x

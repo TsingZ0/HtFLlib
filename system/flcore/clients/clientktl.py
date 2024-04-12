@@ -11,15 +11,6 @@ from sklearn.preprocessing import label_binarize
 from sklearn import metrics
 from torch.utils.data import DataLoader
 
-import torchvision
-from flcore.trainmodel.models import *
-
-from flcore.trainmodel.bilstm import *
-from flcore.trainmodel.resnet import *
-from flcore.trainmodel.alexnet import *
-from flcore.trainmodel.mobilenet_v2 import *
-from flcore.trainmodel.transformer import *
-
 
 class clientKTL(Client):
     def __init__(self, args, id, train_samples, test_samples, **kwargs):
@@ -30,17 +21,6 @@ class clientKTL(Client):
 
         self.m = 0.5
         self.s = 64
-
-        if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            which_model = args.models[self.id % len(args.models)]
-            model = eval(which_model).to(self.device)
-            if 'vit' in which_model:
-                model.heads = nn.AdaptiveAvgPool1d(self.feature_dim)
-            else:
-                model.fc = nn.AdaptiveAvgPool1d(self.feature_dim)
-            head = nn.Linear(self.feature_dim, self.ETF_dim)
-            model = BaseHeadSplit(model, head).to(self.device)
-            save_item(model, self.role, 'model', self.save_folder_name)
 
         self.classes_ids_tensor = torch.tensor(list(range(self.num_classes)), 
                                                dtype=torch.int64, device=self.device)
