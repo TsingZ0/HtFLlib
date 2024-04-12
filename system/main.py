@@ -40,30 +40,17 @@ def run(args):
         start = time.time()
 
         # Generate args.models
-        if args.model_family == "HtFE3":
-            args.models = [
-                'resnet10(num_classes=args.num_classes)', 
-                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
-                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
-            ]
-
-        elif args.model_family == "HtFE9":
-            args.models = [
-                'resnet4(num_classes=args.num_classes)', 
-                'resnet6(num_classes=args.num_classes)', 
-                'resnet8(num_classes=args.num_classes)', 
-                'resnet10(num_classes=args.num_classes)', 
-                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
-                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
-                'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
-                'torchvision.models.resnet101(pretrained=False, num_classes=args.num_classes)', 
-                'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)', 
-            ]
-
-        elif args.model_family == "HtFE2":
+        if args.model_family == "HtFE2":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
+            ]
+
+        elif args.model_family == "HtFE3":
+            args.models = [
+                'resnet10(num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
             ]
 
         elif args.model_family == "HtFE4":
@@ -85,6 +72,19 @@ def run(args):
                 'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
                 'torchvision.models.resnet101(pretrained=False, num_classes=args.num_classes)', 
                 'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)'
+            ]
+
+        elif args.model_family == "HtFE9":
+            args.models = [
+                'resnet4(num_classes=args.num_classes)', 
+                'resnet6(num_classes=args.num_classes)', 
+                'resnet8(num_classes=args.num_classes)', 
+                'resnet10(num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet101(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)', 
             ]
 
         elif args.model_family == "HtFE8-HtC4":
