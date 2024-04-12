@@ -25,4 +25,10 @@ Here, "data-free" refers to the absence of any additional dataset beyond the cli
 
 ## Experimental results
 
-If you are interested in **the experimental results (e.g., the accuracy) of the above algorithms**, you can find some results in our accepted FL paper (i.e., [FedTGP](https://github.com/TsingZ0/FedTGP) and [FedKTL](https://github.com/TsingZ0/FedKTL)). *Please note that this developing project may not be able to reproduce the results on these papers, since some basic settings may change due to the requests of the community.* 
+You can run `total.sh` with *pre-tuned hyperparameters* to obtain some results, like
+  ```bash
+  cd ./system
+  sh total.sh
+  ```
+
+Or you can find some results in our accepted FL paper (i.e., [FedTGP](https://github.com/TsingZ0/FedTGP) and [FedKTL](https://github.com/TsingZ0/FedKTL)). *Please note that this developing project may not be able to reproduce the results on these papers, since some basic settings may change due to the requests of the community.* 
