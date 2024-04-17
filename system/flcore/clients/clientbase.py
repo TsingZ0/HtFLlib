@@ -10,6 +10,7 @@ from sklearn import metrics
 from utils.data_utils import read_client_data
 from flcore.trainmodel.models import BaseHeadSplit
 
+
 class Client(object):
     """
     Base class for clients in federated learning.
