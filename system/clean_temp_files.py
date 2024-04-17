@@ -1,10 +1,11 @@
 import shutil
+import sys
   
-directory_path = 'temp'
+directory_path = sys.argv[1]
   
 # Forcefully delete the directory and its contents
 try:
     shutil.rmtree(directory_path)
-    print('Deleted.')
+    print(f'{directory_path} deleted.')
 except:
-    print('Already deleted.')
+    print(f'{directory_path} already deleted.')
