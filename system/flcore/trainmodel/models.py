@@ -16,7 +16,7 @@ class BaseHeadSplit(nn.Module):
         super().__init__()
 
         self.base = eval(args.models[cid % len(args.models)])
-        head = None
+        head = None # you may need more code for pre-existing heterogeneous heads
         if hasattr(self.base, 'heads'):
             head = self.base.heads
             self.base.heads = nn.AdaptiveAvgPool1d(args.feature_dim)
