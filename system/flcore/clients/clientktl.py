@@ -4,7 +4,6 @@ import torch.nn as nn
 import numpy as np
 import time
 import torch.nn.functional as F
-import torchvision.transforms as transforms
 from flcore.clients.clientbase import Client, load_item, save_item
 from collections import defaultdict
 from sklearn.preprocessing import label_binarize
