@@ -29,7 +29,6 @@ class Local(Server):
                 print("\nEvaluate heterogeneous models")
                 self.evaluate()
 
-            self.selected_clients = self.select_clients()
             for client in self.selected_clients:
                 client.train()
 
