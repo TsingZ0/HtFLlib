@@ -12,8 +12,6 @@ class clientDistill(Client):
         super().__init__(args, id, train_samples, test_samples, **kwargs)
         torch.manual_seed(0)
 
-        self.loss_mse = nn.MSELoss()
-
         self.lamda = args.lamda
 
 
@@ -51,7 +49,7 @@ class clientDistill(Client):
                         y_c = yy.item()
                         if type(global_logits[y_c]) != type([]):
                             logit_new[i, :] = global_logits[y_c].data
-                    loss += self.loss_mse(logit_new, output) * self.lamda
+                    loss += self.loss(output, logit_new.softmax(dim=1)) * self.lamda
 
                 for i, yy in enumerate(y):
                     y_c = yy.item()
@@ -93,7 +91,7 @@ class clientDistill(Client):
                         y_c = yy.item()
                         if type(global_logits[y_c]) != type([]):
                             logit_new[i, :] = global_logits[y_c].data
-                    loss += self.loss_mse(logit_new, output) * self.lamda
+                    loss += self.loss(output, logit_new.softmax(dim=1)) * self.lamda
                     
                 train_num += y.shape[0]
                 losses += loss.item() * y.shape[0]
