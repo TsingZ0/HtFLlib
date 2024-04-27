@@ -185,6 +185,7 @@ class Server(object):
             cl, ns = c.train_metrics()
             num_samples.append(ns)
             losses.append(cl*1.0)
+            print(f'Client {c.id}: Loss: {cl*1.0/ns}')
 
         ids = [c.id for c in self.clients]
 
