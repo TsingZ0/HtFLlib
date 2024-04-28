@@ -142,6 +142,7 @@ class FedTGP(Server):
 
                 Gen_opt.zero_grad()
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(PROTO.parameters(), 100)
                 Gen_opt.step()
 
         print(f'Server loss: {loss.item()}')
