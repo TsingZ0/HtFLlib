@@ -55,6 +55,7 @@ class clientTGP(Client):
 
                 optimizer.zero_grad()
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 100)
                 optimizer.step()
 
         self.collect_protos()
