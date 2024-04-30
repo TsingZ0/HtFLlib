@@ -34,6 +34,12 @@ class BaseHeadSplit(nn.Module):
 
         if hasattr(args, 'heads'):
             self.head = eval(args.heads[cid % len(args.heads)])
+        elif 'vit' in args.models[cid % len(args.models)]:
+            self.head = nn.Sequential(
+                nn.Linear(args.feature_dim, 768), 
+                nn.Tanh(),
+                nn.Linear(768, args.num_classes)
+            )
         else:
             self.head = nn.Linear(args.feature_dim, args.num_classes)
         
@@ -193,8 +199,10 @@ class AmazonMLP(nn.Module):
             else:
                 layers.append(nn.Linear(feature_dim[idx-1], feature_dim[idx]))
                 layers.append(nn.ReLU())
-
-        layers.append(nn.Linear(feature_dim[idx], self.out_features))
+        try:
+            layers.append(nn.Linear(feature_dim[idx], self.out_features))
+        except UnboundLocalError:
+            layers.append(nn.Linear(self.in_features, self.out_features))
         layers.append(nn.ReLU())
 
         self.encoder = nn.Sequential(*layers)
