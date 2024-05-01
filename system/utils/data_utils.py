@@ -24,10 +24,10 @@ def read_data(dataset, idx, is_train=True):
 
 
 def read_client_data(dataset, idx, is_train=True):
-    if dataset[:2] == "ag" or dataset[:2] == "DB":
+    if "News" in dataset:
         return read_client_data_text(dataset, idx, is_train)
-    elif dataset[:2] == "sh":
-        return read_client_data_shakespeare(dataset, idx)
+    elif "Shakespeare" in dataset:
+        return read_client_data_Shakespeare(dataset, idx)
 
     if is_train:
         train_data = read_data(dataset, idx, is_train)
@@ -69,7 +69,7 @@ def read_client_data_text(dataset, idx, is_train=True):
         return test_data
 
 
-def read_client_data_shakespeare(dataset, idx, is_train=True):
+def read_client_data_Shakespeare(dataset, idx, is_train=True):
     if is_train:
         train_data = read_data(dataset, idx, is_train)
         X_train = torch.Tensor(train_data['x']).type(torch.int64)
