@@ -1,10 +1,10 @@
-name: fl
+name: htfllib
 channels:
   - pytorch
   - nvidia
   - defaults
 dependencies:
-  - pip=22
+  - pip
   - pandas
   - scikit-learn
   - scipy
@@ -13,14 +13,13 @@ dependencies:
   - seaborn
   - matplotlib
   - click
-  - pip:
+  - pip:  # manually install with mirror URLs if a timeout occurs
     - torch==2.0.1
     - torchaudio
     - torchtext
     - torchvision
     - calmsize
     - memory-profiler
-    - opacus
     - portalocker
     - cvxpy
     - higher
