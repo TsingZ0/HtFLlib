@@ -1,6 +1,15 @@
 # Heterogeneous Federated Learning Library (HtFLlib)
 Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, clients can build their models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
 
+## Environments
+Install [CUDA v11.6](https://developer.nvidia.com/cuda-11-6-0-download-archive). 
+
+Install [conda latest](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh) and activate conda. 
+
+```bash
+conda env create -f env_cuda_latest.yaml # You may need to downgrade the torch using pip to match the CUDA version
+```
+
 ## Scenarios and datasets
 
 Here, we only show the MNIST dataset in the ***label skew*** scenario generated via Dirichlet distribution for example. Please refer to my other repository [PFLlib](https://github.com/TsingZ0/PFLlib) for more help. 
