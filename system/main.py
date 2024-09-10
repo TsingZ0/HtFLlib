@@ -357,29 +357,8 @@ if __name__ == "__main__":
         args.device = "cpu"
 
     print("=" * 50)
-
-    print("Algorithm: {}".format(args.algorithm))
-    print("Local batch size: {}".format(args.batch_size))
-    print("Local steps: {}".format(args.local_epochs))
-    print("Local learing rate: {}".format(args.local_learning_rate))
-    print("Local learing rate decay: {}".format(args.learning_rate_decay))
-    if args.learning_rate_decay:
-        print("Local learing rate decay gamma: {}".format(args.learning_rate_decay_gamma))
-    print("Total number of clients: {}".format(args.num_clients))
-    print("Clients join in each round: {}".format(args.join_ratio))
-    print("Clients randomly join: {}".format(args.random_join_ratio))
-    print("Client drop rate: {}".format(args.client_drop_rate))
-    print("Client select regarding time: {}".format(args.time_select))
-    if args.time_select:
-        print("Time threthold: {}".format(args.time_threthold))
-    print("Running times: {}".format(args.times))
-    print("Dataset: {}".format(args.dataset))
-    print("Number of classes: {}".format(args.num_classes))
-    print("Backbone: {}".format(args.model_family))
-    print("Using device: {}".format(args.device))
-    print("Auto break: {}".format(args.auto_break))
-    if not args.auto_break:
-        print("Global rounds: {}".format(args.global_rounds))
+    for arg in vars(args):
+        print(arg, '=',getattr(args, arg))
     print("=" * 50)
 
 
