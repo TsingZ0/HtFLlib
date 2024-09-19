@@ -464,7 +464,10 @@ class LSTMNet(nn.Module):
         self.fc = nn.Linear(dims, num_classes)
 
     def forward(self, x):
-        text, text_lengths = x
+        if type(x) == type([]):
+            text, text_lengths = x
+        else:
+            text, text_lengths = x, [x.shape[1] for _ in range(x.shape[0])]
         
         embedded = self.embedding(text)
         
@@ -498,7 +501,10 @@ class fastText(nn.Module):
         self.fc = nn.Linear(hidden_dim, num_classes)
         
     def forward(self, x):
-        text, text_lengths = x
+        if type(x) == type([]):
+            text, _ = x
+        else:
+            text = x
 
         embedded_sent = self.embedding(text)
         h = self.fc1(embedded_sent.mean(1))
@@ -542,7 +548,10 @@ class TextCNN(nn.Module):
         self.fc = nn.Linear(hidden_dim, num_classes)
         
     def forward(self, x):
-        text, text_lengths = x
+        if type(x) == type([]):
+            text, _ = x
+        else:
+            text = x
 
         embedded_sent = self.embedding(text).permute(0,2,1)
         
