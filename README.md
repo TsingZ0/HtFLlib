@@ -1,6 +1,9 @@
 # Heterogeneous Federated Learning Library (HtFLlib)
 Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, clients can build their models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
 
+- ***9 data-free HtFL algorithms and 21 heterogeneous model architectures.***
+- [PFLlib](https://github.com/TsingZ0/PFLlib) compatible.
+
 ## Environments
 Install [CUDA v11.6](https://developer.nvidia.com/cuda-11-6-0-download-archive). 
 
