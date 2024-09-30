@@ -64,29 +64,6 @@ class clientFML(Client):
         self.train_time_cost['total_cost'] += time.time() - start_time
 
 
-    def test_metrics(self):
-        testloaderfull = self.load_test_data()
-        model = load_item(self.role, 'model', self.save_folder_name)
-        # model.to(self.device)
-        model.eval()
-
-        test_acc = 0
-        test_num = 0
-        
-        with torch.no_grad():
-            for x, y in testloaderfull:
-                if type(x) == type([]):
-                    x[0] = x[0].to(self.device)
-                else:
-                    x = x.to(self.device)
-                y = y.to(self.device)
-                output = model(x)
-
-                test_acc += (torch.sum(torch.argmax(output, dim=1) == y)).item()
-                test_num += y.shape[0]
-        
-        return test_acc, test_num, 0
-
     def train_metrics(self):
         trainloader = self.load_train_data()
         model = load_item(self.role, 'model', self.save_folder_name)
