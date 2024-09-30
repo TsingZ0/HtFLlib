@@ -12,23 +12,25 @@ from flcore.trainmodel.transformer import *
 
 # split an original model into a base and a head
 class BaseHeadSplit(nn.Module):
-    def __init__(self, args, cid):
+    def __init__(self, args, cid, feature_dim=None):
         super().__init__()
+        if feature_dim is None:
+            feature_dim = args.feature_dim
 
         self.base = eval(args.models[cid % len(args.models)])
         head = None # you may need more code for pre-existing heterogeneous heads
         if hasattr(self.base, 'heads'):
             head = self.base.heads
-            self.base.heads = nn.AdaptiveAvgPool1d(args.feature_dim)
+            self.base.heads = nn.AdaptiveAvgPool1d(feature_dim)
         elif hasattr(self.base, 'head'):
             head = self.base.head
-            self.base.head = nn.AdaptiveAvgPool1d(args.feature_dim)
+            self.base.head = nn.AdaptiveAvgPool1d(feature_dim)
         elif hasattr(self.base, 'fc'):
             head = self.base.fc
-            self.base.fc = nn.AdaptiveAvgPool1d(args.feature_dim)
+            self.base.fc = nn.AdaptiveAvgPool1d(feature_dim)
         elif hasattr(self.base, 'classifier'):
             head = self.base.classifier
-            self.base.classifier = nn.AdaptiveAvgPool1d(args.feature_dim)
+            self.base.classifier = nn.AdaptiveAvgPool1d(feature_dim)
         else:
             raise('The base model does not have a classification head.')
 
@@ -36,12 +38,12 @@ class BaseHeadSplit(nn.Module):
             self.head = eval(args.heads[cid % len(args.heads)])
         elif 'vit' in args.models[cid % len(args.models)]:
             self.head = nn.Sequential(
-                nn.Linear(args.feature_dim, 768), 
+                nn.Linear(feature_dim, 768), 
                 nn.Tanh(),
                 nn.Linear(768, args.num_classes)
             )
         else:
-            self.head = nn.Linear(args.feature_dim, args.num_classes)
+            self.head = nn.Linear(feature_dim, args.num_classes)
         
     def forward(self, x):
         out = self.base(x)
