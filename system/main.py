@@ -61,6 +61,15 @@ def run(args):
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)'
             ]
 
+        elif args.model_family == "HtFE5":
+            args.models = [
+                'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
+                'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)',
+                'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
+                'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
+            ]
+
         elif args.model_family == "HtFE8":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
