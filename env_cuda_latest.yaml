@@ -5,6 +5,8 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - python=3.11
+  - numpy<2
   - pip=22
   - pandas
   - scikit-learn
@@ -14,6 +16,8 @@ dependencies:
   - seaborn
   - matplotlib
   - click
+  - dill
+  - ninja
   - pip:  # manually install with mirror URLs if a timeout occurs
     - torch==2.0.1
     - torchaudio
@@ -27,3 +31,5 @@ dependencies:
     - diffusers
     - accelerate
     - transformers
+    - timm==0.4.12
+    - ftfy
