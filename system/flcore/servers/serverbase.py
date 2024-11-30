@@ -30,7 +30,7 @@ class Server(object):
         self.time_select = args.time_select
         self.goal = args.goal
         self.time_threthold = args.time_threthold
-        self.top_cnt = 100
+        self.top_cnt = args.top_cnt
         self.auto_break = args.auto_break
         self.role = 'Server'
         if args.save_folder_name == 'temp':
