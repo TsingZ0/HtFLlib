@@ -136,8 +136,8 @@ class FedTGP(Server):
                 dist = torch.sqrt(dist)
                 
                 one_hot = F.one_hot(y, self.num_classes).to(self.device)
-                gap2 = min(self.max_gap.item(), self.margin_threthold)
-                dist = dist + one_hot * gap2
+                margin = min(self.max_gap.item(), self.margin_threthold)
+                dist = dist + one_hot * margin
                 loss = self.CEloss(-dist, y)
 
                 Gen_opt.zero_grad()
