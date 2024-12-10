@@ -7,6 +7,17 @@ Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcm
 - ***9 data-free HtFL algorithms and 21 heterogeneous model architectures.***
 - [PFLlib](https://github.com/TsingZ0/PFLlib) compatible.
 
+🎯**If you find our repository useful, please cite the corresponding paper:**
+
+```
+@article{zhang2023pfllib,
+  title={PFLlib: Personalized Federated Learning Algorithm Library},
+  author={Zhang, Jianqing and Liu, Yang and Hua, Yang and Wang, Hao and Song, Tao and Xue, Zhengui and Ma, Ruhui and Cao, Jian},
+  journal={arXiv preprint arXiv:2312.04992},
+  year={2023}
+}
+```
+
 ## Environments
 Install [CUDA v11.6](https://developer.nvidia.com/cuda-11-6-0-download-archive). 
 
