@@ -5,7 +5,7 @@ import torch
 from typing import Any, Callable, Dict, List, Optional, Union
 from diffusers import StableDiffusionPipeline
 from diffusers.pipelines.stable_diffusion.pipeline_output import StableDiffusionPipelineOutput
-from transformers import CLIPImageProcessor, CLIPTextModel, CLIPTokenizer
+from transformers import CLIPImageProcessor, CLIPTextModel, CLIPTokenizer, CLIPVisionModelWithProjection
 
 def rescale_noise_cfg(noise_cfg, noise_pred_text, guidance_rescale=0.0):
     """
@@ -22,8 +22,28 @@ def rescale_noise_cfg(noise_cfg, noise_pred_text, guidance_rescale=0.0):
 
 
 class MyPipeline(StableDiffusionPipeline):
-    def __init__(self, vae: AutoencoderKL, text_encoder: CLIPTextModel, tokenizer: CLIPTokenizer, unet: UNet2DConditionModel, scheduler: KarrasDiffusionSchedulers, safety_checker: StableDiffusionSafetyChecker, feature_extractor: CLIPImageProcessor, requires_safety_checker: bool = True):
-        super().__init__(vae, text_encoder, tokenizer, unet, scheduler, safety_checker, feature_extractor, requires_safety_checker)
+    def __init__(self, 
+            vae: AutoencoderKL, 
+            text_encoder: CLIPTextModel, 
+            tokenizer: CLIPTokenizer, 
+            unet: UNet2DConditionModel, 
+            scheduler: KarrasDiffusionSchedulers, 
+            safety_checker: StableDiffusionSafetyChecker, 
+            feature_extractor: CLIPImageProcessor, 
+            image_encoder: CLIPVisionModelWithProjection = None,
+            requires_safety_checker: bool = True):
+        
+        super().__init__(
+            vae=vae,
+            text_encoder=text_encoder,
+            tokenizer=tokenizer,
+            unet=unet,
+            scheduler=scheduler,
+            safety_checker=safety_checker,
+            feature_extractor=feature_extractor,
+            image_encoder=image_encoder,
+            requires_safety_checker=requires_safety_checker,
+        )
 
     # https://github.com/huggingface/diffusers/blob/v0.21.2/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion.py#L522
     @torch.no_grad()
