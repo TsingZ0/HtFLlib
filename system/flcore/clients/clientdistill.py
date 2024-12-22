@@ -43,7 +43,7 @@ class clientDistill(Client):
                 output = model(x)
                 loss = self.loss(output, y)
 
-                if global_logits != None:
+                if global_logits is not None:
                     logit_new = copy.deepcopy(output.detach())
                     for i, yy in enumerate(y):
                         y_c = yy.item()
@@ -85,7 +85,7 @@ class clientDistill(Client):
                 output = model(x)
                 loss = self.loss(output, y)
 
-                if global_logits != None:
+                if global_logits is not None:
                     logit_new = copy.deepcopy(output.detach())
                     for i, yy in enumerate(y):
                         y_c = yy.item()
