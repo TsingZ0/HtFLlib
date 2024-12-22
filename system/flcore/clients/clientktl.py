@@ -123,7 +123,7 @@ class clientKTL(Client):
                     x = x.to(self.device)
                 y = y.to(self.device)
                 proj = model(x)
-                cosine = F.linear(F.normalize(proj), F.normalize(ETF))
+                cosine = F.linear(F.normalize(proj), ETF)
 
                 test_acc += (torch.sum(torch.argmax(cosine, dim=1) == y)).item()
                 test_num += y.shape[0]
