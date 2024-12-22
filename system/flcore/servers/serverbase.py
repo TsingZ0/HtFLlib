@@ -163,7 +163,7 @@ class Server(object):
             except:
                 print('Already deleted.')
 
-    def test_metrics(self):        
+    def test_metrics(self):
         num_samples = []
         tot_correct = []
         tot_auc = []
@@ -178,7 +178,7 @@ class Server(object):
 
         return ids, num_samples, tot_correct, tot_auc
 
-    def train_metrics(self):        
+    def train_metrics(self):
         num_samples = []
         losses = []
         for c in self.clients:
