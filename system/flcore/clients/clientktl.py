@@ -106,6 +106,7 @@ class clientKTL(Client):
         testloaderfull = self.load_test_data()
         model = load_item(self.role, 'model', self.save_folder_name)
         ETF = load_item('Server', 'ETF', self.save_folder_name)
+        ETF = F.normalize(ETF.T)
         # model.to(self.device)
         model.eval()
 
@@ -122,7 +123,7 @@ class clientKTL(Client):
                     x = x.to(self.device)
                 y = y.to(self.device)
                 proj = model(x)
-                cosine = F.linear(F.normalize(proj), F.normalize(ETF.T))
+                cosine = F.linear(F.normalize(proj), F.normalize(ETF))
 
                 test_acc += (torch.sum(torch.argmax(cosine, dim=1) == y)).item()
                 test_num += y.shape[0]
