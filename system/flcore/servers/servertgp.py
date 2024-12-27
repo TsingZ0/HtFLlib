@@ -34,7 +34,7 @@ class FedTGP(Server):
         self.server_hidden_dim = self.feature_dim
         
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            PROTO = Trainable_prototypes(
+            PROTO = Trainable_Global_Prototypes(
                 self.num_classes, 
                 self.server_hidden_dim, 
                 self.feature_dim, 
@@ -168,7 +168,7 @@ def proto_cluster(protos_list):
     return proto_clusters
             
 
-class Trainable_prototypes(nn.Module):
+class Trainable_Global_Prototypes(nn.Module):
     def __init__(self, num_classes, server_hidden_dim, feature_dim, device):
         super().__init__()
 
