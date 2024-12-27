@@ -69,7 +69,7 @@ class FedTGP(Server):
             # [t.join() for t in threads]
 
             self.receive_protos()
-            self.update_Gen()
+            self.update_TGP()
 
             self.Budget.append(time.time() - s_t)
             print('-'*50, self.Budget[-1])
@@ -117,9 +117,9 @@ class FedTGP(Server):
         print('min_gap', self.min_gap)
         print('max_gap', self.max_gap)
             
-    def update_Gen(self):
+    def update_TGP(self):
         TGP = load_item(self.role, 'TGP', self.save_folder_name)
-        Gen_opt = torch.optim.SGD(TGP.parameters(), lr=self.server_learning_rate)
+        TGP_opt = torch.optim.SGD(TGP.parameters(), lr=self.server_learning_rate)
         TGP.train()
         for e in range(self.server_epochs):
             proto_loader = DataLoader(self.uploaded_protos, self.batch_size, 
@@ -140,9 +140,9 @@ class FedTGP(Server):
                 dist = dist + one_hot * margin
                 loss = self.CEloss(-dist, y)
 
-                Gen_opt.zero_grad()
+                TGP_opt.zero_grad()
                 loss.backward()
-                Gen_opt.step()
+                TGP_opt.step()
 
         print(f'Server loss: {loss.item()}')
         self.uploaded_protos = []
