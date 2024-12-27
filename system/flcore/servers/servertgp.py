@@ -34,14 +34,14 @@ class FedTGP(Server):
         self.server_hidden_dim = self.feature_dim
         
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            PROTO = Trainable_Global_Prototypes(
+            TGP = Trainable_Global_Prototypes(
                 self.num_classes, 
                 self.server_hidden_dim, 
                 self.feature_dim, 
                 self.device
             ).to(self.device)
-            save_item(PROTO, self.role, 'PROTO', self.save_folder_name)
-            print(PROTO)
+            save_item(TGP, self.role, 'TGP', self.save_folder_name)
+            print(TGP)
         self.CEloss = nn.CrossEntropyLoss()
         self.MSEloss = nn.MSELoss()
 
@@ -118,16 +118,16 @@ class FedTGP(Server):
         print('max_gap', self.max_gap)
             
     def update_Gen(self):
-        PROTO = load_item(self.role, 'PROTO', self.save_folder_name)
-        Gen_opt = torch.optim.SGD(PROTO.parameters(), lr=self.server_learning_rate)
-        PROTO.train()
+        TGP = load_item(self.role, 'TGP', self.save_folder_name)
+        Gen_opt = torch.optim.SGD(TGP.parameters(), lr=self.server_learning_rate)
+        TGP.train()
         for e in range(self.server_epochs):
             proto_loader = DataLoader(self.uploaded_protos, self.batch_size, 
                                       drop_last=False, shuffle=True)
             for proto, y in proto_loader:
                 y = torch.Tensor(y).type(torch.int64).to(self.device)
 
-                proto_gen = PROTO(list(range(self.num_classes)))
+                proto_gen = TGP(list(range(self.num_classes)))
 
                 features_square = torch.sum(torch.pow(proto, 2), 1, keepdim=True)
                 centers_square = torch.sum(torch.pow(proto_gen, 2), 1, keepdim=True)
@@ -146,12 +146,12 @@ class FedTGP(Server):
 
         print(f'Server loss: {loss.item()}')
         self.uploaded_protos = []
-        save_item(PROTO, self.role, 'PROTO', self.save_folder_name)
+        save_item(TGP, self.role, 'TGP', self.save_folder_name)
 
-        PROTO.eval()
+        TGP.eval()
         global_protos = defaultdict(list)
         for class_id in range(self.num_classes):
-            global_protos[class_id] = PROTO(torch.tensor(class_id, device=self.device)).detach()
+            global_protos[class_id] = TGP(torch.tensor(class_id, device=self.device)).detach()
         save_item(global_protos, self.role, 'global_protos', self.save_folder_name)
 
 
