@@ -31,7 +31,7 @@ class clientKD(Client):
         global_model = load_item(self.role, 'global_model', self.save_folder_name)
         W_h = load_item(self.role, 'W_h', self.save_folder_name)
         optimizer = torch.optim.SGD(model.parameters(), lr=self.learning_rate)
-        optimizer_g = torch.optim.SGD(global_model.parameters(), lr=self.learning_rate)
+        optimizer_g = torch.optim.SGD(global_model.parameters(), lr=self.mentee_learning_rate)
         optimizer_W = torch.optim.SGD(W_h.parameters(), lr=self.learning_rate)
         # model.to(self.device)
         model.train()
