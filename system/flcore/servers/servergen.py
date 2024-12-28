@@ -25,7 +25,7 @@ class FedGen(Server):
         # self.load_model()
         self.Budget = []
 
-        generative_model = Generative(
+        generative_model = Generator(
                                 args.noise_dim, 
                                 args.num_classes, 
                                 args.hidden_dim, 
@@ -149,7 +149,7 @@ class FedGen(Server):
         
 
 # based on official code https://github.com/zhuangdizhu/FedGen/blob/main/FLAlgorithms/trainmodel/generator.py
-class Generative(nn.Module):
+class Generator(nn.Module):
     def __init__(self, noise_dim, num_classes, hidden_dim, feature_dim, device) -> None:
         super().__init__()
 
