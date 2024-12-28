@@ -17,7 +17,7 @@ Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcm
 ```
 
 ## Environments
-Install [CUDA v11.6](https://developer.nvidia.com/cuda-11-6-0-download-archive). 
+Install [CUDA](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html). 
 
 Install [conda latest](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh) and activate conda. 
 
