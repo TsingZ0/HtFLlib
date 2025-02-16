@@ -19,6 +19,7 @@ from flcore.servers.servertgp import FedTGP
 from flcore.servers.serverktl_stylegan_xl import FedKTL as FedKTL_stylegan_xl
 from flcore.servers.serverktl_stylegan_3 import FedKTL as FedKTL_stylegan_3
 from flcore.servers.serverktl_stable_diffusion import FedKTL as FedKTL_stable_diffusion
+from flcore.servers.servermrl import FedMRL
 
 from utils.result_utils import average_data
 from utils.mem_utils import MemReporter
@@ -261,6 +262,9 @@ def run(args):
 
         elif args.algorithm == "FedKTL-stable-diffusion":
             server = FedKTL_stable_diffusion(args, i)
+
+        elif args.algorithm == "FedMRL":
+            server = FedMRL(args, i)
             
         else:
             raise NotImplementedError
@@ -357,6 +361,8 @@ if __name__ == "__main__":
     parser.add_argument('-gbs', "--gen_batch_size", type=int, default=4,
                         help="Not related to the performance. A small value saves GPU memory.")
     parser.add_argument('-mu', "--mu", type=float, default=50.0)
+    # FedMRL
+    parser.add_argument('-sfd', "--sub_feature_dim", type=int, default=128)
 
 
     args = parser.parse_args()

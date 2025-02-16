@@ -2,7 +2,7 @@
 
 Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, clients can build their models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
 
-- ***9 data-free HtFL algorithms and 21 heterogeneous model architectures.***
+- ***10 data-free HtFL algorithms and 21 heterogeneous model architectures.***
 - [PFLlib](https://github.com/TsingZ0/PFLlib) compatible.
 
 🎯**If you find our repository useful, please cite the corresponding paper:**
@@ -46,6 +46,7 @@ Here, "data-free" refers to the absence of any additional dataset beyond the cli
 - **FedGH** — [FedGH: Heterogeneous Federated Learning with Generalized Global Header](https://dl.acm.org/doi/10.1145/3581783.3611781) *ACM MM 2023*
 - **FedTGP** — [FedTGP: Trainable Global Prototypes with Adaptive-Margin-Enhanced Contrastive Learning for Data and Model Heterogeneity in Federated Learning](https://arxiv.org/abs/2401.03230) *AAAI 2024*
 - **FedKTL** — [An Upload-Efficient Scheme for Transferring Knowledge From a Server-Side Pre-trained Generator to Clients in Heterogeneous Federated Learning](https://arxiv.org/abs/2403.15760) *CVPR 2024* *(Note: FedKTL requires pre-trained generators to run, please refer to its [project page](https://github.com/TsingZ0/FedKTL) for download links.)*
+- **FedMRL** — [Federated Model Heterogeneous Matryoshka Representation Learning](https://arxiv.org/abs/2406.00488) *NeurIPS 2024*
 
 ## Experimental results
 
