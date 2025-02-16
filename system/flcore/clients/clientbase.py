@@ -146,11 +146,11 @@ class Client(object):
 def save_item(item, role, item_name, item_path=None):
     if not os.path.exists(item_path):
         os.makedirs(item_path)
-    torch.save(item, os.path.join(item_path, f"Client{role}_{item_name}.pt"))
+    torch.save(item, os.path.join(item_path, role + "_" + item_name + ".pt"))
 
 def load_item(role, item_name, item_path=None):
     try:
-        return torch.load(os.path.join(item_path, f"Client{role}_{item_name}.pt"))
+        return torch.load(os.path.join(item_path, role + "_" + item_name + ".pt"))
     except FileNotFoundError:
-        print(f"Not Found: Client{role}_{item_name}")
+        print(role, item_name, 'Not Found')
         return None
