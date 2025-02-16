@@ -58,6 +58,9 @@ class clientMRL(Client):
                 optimizer_p.zero_grad()
                 optimizer_g.zero_grad()
                 loss.backward()
+                # # prevent divergency on specifical tasks
+                # torch.nn.utils.clip_grad_norm_(model.parameters(), 10)
+                # torch.nn.utils.clip_grad_norm_(global_model.parameters(), 10)
                 optimizer.step()
                 optimizer_p.step()
                 optimizer_g.step()
