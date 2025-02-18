@@ -231,7 +231,11 @@ class FedKTL(Server):
         F.train()
         Centroids.train()
         for _ in range(self.server_epochs):
-            proto_loader = DataLoader(uploaded_protos, self.server_batch_size, drop_last=False, shuffle=True)
+            if len(uploaded_protos) % self.server_batch_size == 1:
+                drop_last = True
+            else:
+                drop_last = False            
+            proto_loader = DataLoader(uploaded_protos, self.server_batch_size, drop_last=drop_last, shuffle=True)
             for P, y in proto_loader:
                 Q = F(P)
                 latents = pipe.prepare_latents(
