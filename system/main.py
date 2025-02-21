@@ -41,20 +41,20 @@ def run(args):
         start = time.time()
 
         # Generate args.models
-        if args.model_family == "HtFE2":
+        if args.model_family == "HtFE-img-2":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "HtFE3":
+        elif args.model_family == "HtFE-img-3":
             args.models = [
                 'resnet10(num_classes=args.num_classes)', 
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
                 'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "HtFE4":
+        elif args.model_family == "HtFE-img-4":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
@@ -62,7 +62,7 @@ def run(args):
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)'
             ]
 
-        elif args.model_family == "HtFE5":
+        elif args.model_family == "HtFE-img-5":
             args.models = [
                 'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
                 'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
@@ -71,7 +71,7 @@ def run(args):
                 'torchvision.models.resnet50(pretrained=False, num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "HtFE8":
+        elif args.model_family == "HtFE-img-8":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 # 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=10816)', 
@@ -84,7 +84,7 @@ def run(args):
                 'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)'
             ]
 
-        elif args.model_family == "HtFE9":
+        elif args.model_family == "HtFE-img-9":
             args.models = [
                 'resnet4(num_classes=args.num_classes)', 
                 'resnet6(num_classes=args.num_classes)', 
@@ -97,7 +97,7 @@ def run(args):
                 'torchvision.models.resnet152(pretrained=False, num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "HtFE8-HtC4":
+        elif args.model_family == "HtFE-img-8-HtC-img-4":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
@@ -116,7 +116,7 @@ def run(args):
                 'Head(hidden_dims=[512, 128], num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "Res34-HtC4":
+        elif args.model_family == "Res34-HtC-img-4":
             args.models = [
                 'torchvision.models.resnet34(pretrained=False, num_classes=args.num_classes)', 
             ]
@@ -128,27 +128,7 @@ def run(args):
                 'Head(hidden_dims=[512, 128], num_classes=args.num_classes)', 
             ]
 
-        elif args.model_family == "HCNNs8":
-            args.models = [
-                'CNN(num_cov=1, hidden_dims=[], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=2, hidden_dims=[], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=1, hidden_dims=[512], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=2, hidden_dims=[512], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=1, hidden_dims=[1024], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=2, hidden_dims=[1024], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=1, hidden_dims=[1024, 512], in_features=1, num_classes=args.num_classes)', 
-                'CNN(num_cov=2, hidden_dims=[1024, 512], in_features=1, num_classes=args.num_classes)', 
-            ]
-
-        elif args.model_family == "ViTs":
-            args.models = [
-                'torchvision.models.vit_b_16(image_size=32, num_classes=args.num_classes)', 
-                'torchvision.models.vit_b_32(image_size=32, num_classes=args.num_classes)',
-                'torchvision.models.vit_l_16(image_size=32, num_classes=args.num_classes)',
-                'torchvision.models.vit_l_32(image_size=32, num_classes=args.num_classes)',
-            ]
-
-        elif args.model_family == "HtM10":
+        elif args.model_family == "HtM-img-10":
             args.models = [
                 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
                 'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
