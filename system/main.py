@@ -226,7 +226,7 @@ def run(args):
                 'AmazonMLP(feature_dim=[1000, 500, 200])', 
             ]
 
-         elif args.model_family == "HtFE-sen-2":
+        elif args.model_family == "HtFE-sen-2":
             args.models = [
                 'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=1)',
                 'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=2)',
