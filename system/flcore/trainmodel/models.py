@@ -571,6 +571,70 @@ class TextCNN(nn.Module):
 
 # ====================================================================================================================
 
+class GRUNet(nn.Module):
+    def __init__(self, hidden_dim, num_layers=2, bidirectional=False, dropout=0.2, 
+                 padding_idx=0, vocab_size=98635, num_classes=10):
+        super().__init__()
+
+        self.dropout = nn.Dropout(dropout)
+        self.embedding = nn.Embedding(vocab_size, hidden_dim, padding_idx)
+        self.gru = nn.GRU(input_size=hidden_dim, 
+                          hidden_size=hidden_dim, 
+                          num_layers=num_layers, 
+                          bidirectional=bidirectional, 
+                          dropout=dropout, 
+                          batch_first=True)
+        dims = hidden_dim * 2 if bidirectional else hidden_dim
+        self.fc = nn.Linear(dims, num_classes)
+
+    def forward(self, x):
+        if isinstance(x, list):
+            text, text_lengths = x
+        else:
+            text, text_lengths = x, [x.shape[1] for _ in range(x.shape[0])]
+
+        embedded = self.embedding(text)
+        
+        packed_embedded = nn.utils.rnn.pack_padded_sequence(embedded, text_lengths, batch_first=True, enforce_sorted=False)
+        packed_output, hidden = self.gru(packed_embedded)
+
+        if isinstance(hidden, tuple):  # LSTM 返回 (hidden, cell)，GRU 只返回 hidden
+            hidden = hidden[0]
+
+        if self.gru.bidirectional:
+            hidden = torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)
+        else:
+            hidden = hidden[-1, :, :]
+
+        hidden = self.dropout(hidden)
+        output = self.fc(hidden)
+        output = F.log_softmax(output, dim=1)
+
+        return output
+
+
+# ====================================================================================================================
+
+class TextLogisticRegression(nn.Module):
+    def __init__(self, hidden_dim, vocab_size=98635, num_classes=10):
+        super(TextLogisticRegression, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, hidden_dim)
+        self.fc = nn.Linear(hidden_dim, num_classes)
+
+    def forward(self, x):
+        if isinstance(x, list):
+            text, _ = x
+        else:
+            text = x
+
+        embedded = self.embedding(text)
+        avg_embedding = embedded.mean(dim=1)  # 取句子 token 平均表示
+        output = self.fc(avg_embedding)
+        output = F.log_softmax(output, dim=1)
+
+        return output
+
+# ====================================================================================================================
 
 # class linear(Function):
 #   @staticmethod
