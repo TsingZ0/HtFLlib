@@ -226,6 +226,40 @@ def run(args):
                 'AmazonMLP(feature_dim=[1000, 500, 200])', 
             ]
 
+         elif args.model_family == "HtFE-sen-2":
+            args.models = [
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=1)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=2)',
+            ]
+
+        elif args.model_family == "HtFE-sen-3":
+            args.models = [
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=1)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=2)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=3)',
+            ]
+
+        elif args.model_family == "HtFE-sen-5":
+            args.models = [
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=1)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=2)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=3)',
+                'HARCNN1(9, dim_hidden=832, num_classes=args.num_classes, stride=1)',
+                'HARCNN3(9, dim_hidden=3328, num_classes=args.num_classes, stride=1)',
+            ]
+
+        elif args.model_family == "HtFE-sen-8":
+            args.models = [
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=1)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=2)',
+                'HARCNN(9, dim_hidden=1664, num_classes=args.num_classes, stride=3)',
+                'HARCNN1(9, dim_hidden=832, num_classes=args.num_classes, stride=1)',
+                'HARCNN1(9, dim_hidden=832, num_classes=args.num_classes, stride=2)',
+                'HARCNN1(9, dim_hidden=832, num_classes=args.num_classes, stride=3)',
+                'HARCNN3(9, dim_hidden=3328, num_classes=args.num_classes, stride=1)',
+                'HARCNN3(9, dim_hidden=3328, num_classes=args.num_classes, stride=2)',
+            ]
+
         else:
             raise NotImplementedError
             
