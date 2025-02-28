@@ -11,7 +11,7 @@ Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcm
 
 ```
 @article{zhang2023pfllib,
-  title={PFLlib: Personalized Federated Learning Algorithm Library},
+  title={PFLlib: A Beginner-Friendly and Comprehensive Personalized Federated Learning Library and Benchmark},
   author={Zhang, Jianqing and Liu, Yang and Hua, Yang and Wang, Hao and Song, Tao and Xue, Zhengui and Ma, Ruhui and Cao, Jian},
   journal={arXiv preprint arXiv:2312.04992},
   year={2023}
