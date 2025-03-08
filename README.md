@@ -1,6 +1,8 @@
-# HtFLlib: Heterogeneous Federated Learning Library
+# HtFLlib: Heterogeneous Federated Learning Library and Benchmark
 
-Standard federated learning, e.g., [FedAvg](http://proceedings.mlr.press/v54/mcmahan17a.html), assumes that all the participating clients build their local models with the same architecture, which limits its utility in real-world scenarios. In practice, clients can build their models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
+As AI developing for many years, institutions already have built their specific models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
+
+![](./benchmark.png)
 
 - ***40 heterogeneous model architectures.***
 - ***19 heterogeneous model groups.***
@@ -39,7 +41,7 @@ Here, we only show the MNIST dataset in the ***label skew*** scenario generated 
 Here, "data-free" refers to the absence of any additional dataset beyond the clients' private data. We only consider data-free algorithms here, as they have fewer restrictions and assumptions, making them more valuable and easily extendable to other scenarios, such as the existence of public server data. 
 
 - **Local** — Each client trains its model locally without federation.
-- **FD** — [Communication-Efficient On-Device Machine Learning: Federated Distillation and Augmentation under Non-IID Private Data](https://arxiv.org/pdf/1811.11479.pdf) *2018*
+- **FD (FedDistill)** — [Communication-Efficient On-Device Machine Learning: Federated Distillation and Augmentation under Non-IID Private Data](https://arxiv.org/pdf/1811.11479.pdf) *2018*
 - **FML** — [Federated Mutual Learning](https://arxiv.org/abs/2006.16765) *2020*
 - **LG-FedAvg** — [Think Locally, Act Globally: Federated Learning with Local and Global Representations](https://arxiv.org/abs/2001.01523) *2020*
 - **FedGen** — [Data-Free Knowledge Distillation for Heterogeneous Federated Learning](http://proceedings.mlr.press/v139/zhu21b.html) *ICML 2021*
