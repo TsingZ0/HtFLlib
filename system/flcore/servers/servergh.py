@@ -70,15 +70,23 @@ class FedGH(Server):
     def receive_protos(self):
         assert (len(self.selected_clients) > 0)
 
+        active_clients = random.sample(
+            self.selected_clients, int((1-self.client_drop_rate) * self.current_num_join_clients))
+
         self.uploaded_ids = []
+        self.uploaded_weights = []
+        tot_samples = 0
         uploaded_protos = []
-        for client in self.selected_clients:
+        for client in active_clients:
+            tot_samples += client.train_samples
             self.uploaded_ids.append(client.id)
+            self.uploaded_weights.append(client.train_samples)
             protos = load_item(client.role, 'protos', client.save_folder_name)
             for cc in protos.keys():
                 y = torch.tensor(cc, dtype=torch.int64, device=self.device)
                 uploaded_protos.append((protos[cc], y))
-            
+        for i, w in enumerate(self.uploaded_weights):
+            self.uploaded_weights[i] = w / tot_samples
         save_item(uploaded_protos, self.role, 'uploaded_protos', self.save_folder_name)
     
     def train_head(self):
