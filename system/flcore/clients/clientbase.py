@@ -33,7 +33,10 @@ class Client(object):
         self.local_epochs = args.local_epochs
 
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            model = BaseHeadSplit(args, self.id).to(self.device)
+            if args.models_folder_name:
+                model = load_item(self.role, 'model', args.models_folder_name).to(self.device)
+            else:
+                model = BaseHeadSplit(args, self.id).to(self.device)
             save_item(model, self.role, 'model', self.save_folder_name)
 
         self.train_slow = kwargs['train_slow']
