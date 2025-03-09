@@ -1,7 +1,7 @@
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 0 -algo Local > total-Cifar100-HtFE-img-8-fd=512-Local.out 2>&1 &
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 1 -algo FedProto -lam 10 > total-Cifar100-HtFE-img-8-fd=512-FedProto.out 2>&1 &
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 1 -algo FedGen -nd 32 -glr 0.1 -hd 512 -se 100 > total-Cifar100-HtFE-img-8-fd=512-FedGen.out 2>&1 &
-nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 2 -algo FedDistill -lam 1 > total-Cifar100-HtFE-img-8-fd=512-FedDistill.out 2>&1 &
+nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 2 -algo FD -lam 1 > total-Cifar100-HtFE-img-8-fd=512-FD.out 2>&1 &
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 2 -algo FML -al 0.5 -bt 0.5 > total-Cifar100-HtFE-img-8-fd=512-FML.out 2>&1 &
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 3 -algo FedKD -mlr 0.01 -Ts 0.95 -Te 0.98 > total-Cifar100-HtFE-img-8-fd=512-FedKD.out 2>&1 &
 nohup python -u main.py -t 3 -ab 1 -lr 0.01 -jr 1 -lbs 10 -ls 1 -nc 20 -ncl 100 -data Cifar100 -m HtFE-img-8 -fd 512 -did 3 -algo LG-FedAvg > total-Cifar100-HtFE-img-8-fd=512-LG-FedAvg.out 2>&1 &
