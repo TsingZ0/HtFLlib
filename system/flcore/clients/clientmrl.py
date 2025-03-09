@@ -74,7 +74,7 @@ class clientMRL(Client):
 
 
     def test_metrics(self):
-        testloaderfull = self.load_test_data()
+        testloader = self.load_test_data()
         model = load_item(self.role, 'model', self.save_folder_name)
         proj = load_item(self.role, 'proj', self.save_folder_name)
         global_model = load_item('Server', 'global_model', self.save_folder_name)
@@ -87,7 +87,7 @@ class clientMRL(Client):
         y_true = []
         
         with torch.no_grad():
-            for x, y in testloaderfull:
+            for x, y in testloader:
                 if type(x) == type([]):
                     x[0] = x[0].to(self.device)
                 else:
