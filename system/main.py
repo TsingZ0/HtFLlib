@@ -73,8 +73,8 @@ def run(args):
 
         elif args.model_family == "HtFE-img-8":
             args.models = [
-                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', 
-                # 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=10816)', 
+                'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=1600)', # for 32x32 img
+                # 'FedAvgCNN(in_features=3, num_classes=args.num_classes, dim=10816)', # for 64x64 img
                 'torchvision.models.googlenet(pretrained=False, aux_logits=False, num_classes=args.num_classes)', 
                 'mobilenet_v2(pretrained=False, num_classes=args.num_classes)', 
                 'torchvision.models.resnet18(pretrained=False, num_classes=args.num_classes)', 
