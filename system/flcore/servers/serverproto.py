@@ -3,7 +3,6 @@ import numpy as np
 from flcore.clients.clientproto import clientProto
 from flcore.servers.serverbase import Server
 from flcore.clients.clientbase import load_item, save_item
-from utils.data_utils import read_client_data
 from threading import Thread
 from collections import defaultdict
 
