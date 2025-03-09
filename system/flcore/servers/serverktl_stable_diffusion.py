@@ -52,7 +52,7 @@ class FedKTL(Server):
             pipe = StableDiffusionPipeline.from_pretrained(
                 args.generator_path, 
                 custom_pipeline='./stable-diffusion/pipelines/', 
-                torch_dtype=torch.float16, 
+                # torch_dtype=torch.float16, 
             )
             pipe.set_progress_bar_config(disable=True)
             pipe = pipe.to(self.device)
