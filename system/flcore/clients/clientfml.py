@@ -71,6 +71,7 @@ class clientFML(Client):
         global_model = load_item('Server', 'global_model', self.save_folder_name)
         # model.to(self.device)
         model.eval()
+        global_model.eval()
 
         train_num = 0
         losses = 0
