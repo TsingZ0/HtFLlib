@@ -35,6 +35,7 @@ class clientKD(Client):
         optimizer_W = torch.optim.SGD(W_h.parameters(), lr=self.learning_rate)
         # model.to(self.device)
         model.train()
+        global_model.train()
         
         start_time = time.time()
 

@@ -25,6 +25,7 @@ class clientFML(Client):
         optimizer_g = torch.optim.SGD(global_model.parameters(), lr=self.learning_rate)
         # model.to(self.device)
         model.train()
+        global_model.train()
         
         start_time = time.time()
 
