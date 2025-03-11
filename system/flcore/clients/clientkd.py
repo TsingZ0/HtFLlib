@@ -106,6 +106,7 @@ class clientKD(Client):
         W_h = load_item(self.role, 'W_h', self.save_folder_name)
         # model.to(self.device)
         model.eval()
+        global_model.eval()
 
         train_num = 0
         losses = 0
