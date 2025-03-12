@@ -403,7 +403,7 @@ if __name__ == "__main__":
     # FedTGP
     parser.add_argument('-mart', "--margin_threthold", type=float, default=100.0)
     # FedKTL
-    parser.add_argument('-GPath', "--generator_path", type=str, default='stable-diffusion/v1.5')
+    parser.add_argument('-GPath', "--generator_path", type=str, default='stylegan/stylegan-xl-models/imagenet64.pkl')
     parser.add_argument('-prompt', "--stable_diffusion_prompt", type=str, default='a cat')
     parser.add_argument('-sbs', "--server_batch_size", type=int, default=100)
     parser.add_argument('-gbs', "--gen_batch_size", type=int, default=4,
