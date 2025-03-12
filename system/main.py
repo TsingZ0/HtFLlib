@@ -266,6 +266,13 @@ def run(args):
         for model in args.models:
             print(model)
 
+        if hasattr(args, 'global_model'):
+            print('global_model:', args.global_model)
+
+        if hasattr(args, 'heads'):
+            for head in args.heads:
+                print('head:', head)
+
         # select algorithm
         if args.algorithm == "Local":
             server = Local(args, i)
