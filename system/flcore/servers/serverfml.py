@@ -12,7 +12,10 @@ class FML(Server):
     def __init__(self, args, times):
         super().__init__(args, times)
         if args.save_folder_name == 'temp' or 'temp' not in args.save_folder_name:
-            global_model = BaseHeadSplit(args, 0).to(args.device)            
+            if hasattr(args, 'global_model'):
+                global_model = BaseHeadSplit(args, is_global=True).to(args.device)
+            else:
+                global_model = BaseHeadSplit(args, 0).to(args.device)   
             save_item(global_model, self.role, 'global_model', self.save_folder_name)
         
         # select slow clients

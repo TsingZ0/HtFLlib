@@ -12,12 +12,16 @@ from flcore.trainmodel.transformer import *
 
 # split an original model into a base and a head
 class BaseHeadSplit(nn.Module):
-    def __init__(self, args, cid, feature_dim=None):
+    def __init__(self, args, cid=0, feature_dim=None, is_global=False):
         super().__init__()
         if feature_dim is None:
             feature_dim = args.feature_dim
 
-        self.base = eval(args.models[cid % len(args.models)])
+        if is_global:
+            self.base = eval(args.global_model)
+        else:
+            self.base = eval(args.models[cid % len(args.models)])
+
         head = None # you may need more code for pre-existing heterogeneous heads
         if hasattr(self.base, 'heads'):
             head = self.base.heads
