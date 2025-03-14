@@ -207,7 +207,6 @@ def run(args):
         elif args.model_family == "MLPs":
             args.models = [
                 'AmazonMLP(feature_dim=[])', 
-                'AmazonMLP(feature_dim=[200])', 
                 'AmazonMLP(feature_dim=[500])', 
                 'AmazonMLP(feature_dim=[1000, 500])', 
                 'AmazonMLP(feature_dim=[1000, 500, 200])', 
