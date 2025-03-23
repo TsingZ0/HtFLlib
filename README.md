@@ -1,4 +1,4 @@
-# <img src="docs/imgs/logo.png" alt="icon" height="24" style="vertical-align:sub;"/>HtFLlib: Heterogeneous Federated Learning Library and Benchmark
+# <img src="docs/imgs/logo.png" alt="icon" height="30" style="vertical-align:sub;"/>HtFLlib: Heterogeneous Federated Learning Library and Benchmark
 
 As AI developing for many years, institutions already have built their specific models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
 
