@@ -358,7 +358,7 @@ if __name__ == "__main__":
     parser.add_argument('-sfn', "--save_folder_name", type=str, default='temp')
     parser.add_argument('-ab', "--auto_break", type=bool, default=False)
     parser.add_argument('-fd', "--feature_dim", type=int, default=512)
-    parser.add_argument('-vs', "--vocab_size", type=int, default=98635)
+    parser.add_argument('-vs', "--vocab_size", type=int, default=0)
     parser.add_argument('-ml', "--max_len", type=int, default=200)
     parser.add_argument('-mfn', "--models_folder_name", type=str, default='')
     # practical
