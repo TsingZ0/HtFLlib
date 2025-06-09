@@ -1,5 +1,7 @@
 # <img src="docs/imgs/logo.png" alt="icon" height="24" style="vertical-align:sub;"/> HtFLlib: Heterogeneous Federated Learning Library and Benchmark
 
+Accepted by **KDD'25 Benchmark** Track: [paper link](https://arxiv.org/abs/2506.05407).
+
 As AI developing for many years, institutions already have built their specific models with ***heterogeneous model architectures*** for specific local tasks. When faced with **data heterogeneity**, **model heterogeneity**, **communication overhead**, and **intellectual property (IP) protection**, Heterogeneous Federated Learning (HtFL) emerges. 
 
 ![](docs/imgs/benchmark.png)
@@ -12,6 +14,13 @@ As AI developing for many years, institutions already have built their specific 
 🎯**If you find our repository useful, please cite the corresponding paper:**
 
 ```
+@inproceedings{Zhang2025htfllib,
+  author = {Jianqing Zhang, Xinghao Wu, Yanbing Zhou, Xiaoting Sun, Qiqi Cai, Yang Liu, Yang Hua, Zhenzhe Zheng, Jian Cao, Qiang Yang},
+  title = {HtFLlib: A Comprehensive Heterogeneous Federated Learning Library and Benchmark},
+  year = {2025},
+  booktitle = {Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining}
+}
+
 @article{zhang2025pfllib,
   title={PFLlib: A Beginner-Friendly and Comprehensive Personalized Federated Learning Library and Benchmark},
   author={Zhang, Jianqing and Liu, Yang and Hua, Yang and Wang, Hao and Song, Tao and Xue, Zhengui and Ma, Ruhui and Cao, Jian},
