@@ -9,10 +9,11 @@ As AI developing for many years, institutions already have built their specific 
 
 ![](docs/imgs/benchmark.png)
 
-- ***40 heterogeneous model architectures.***
-- ***19 heterogeneous model groups.***
-- ***10 data-free HtFL algorithms.***
+- **40** heterogeneous model architectures.
+- **19** heterogeneous model groups.
+- **10** data-free HtFL algorithms.
 - [PFLlib](https://github.com/TsingZ0/PFLlib) compatible.
+- Pre-trained model support.
 
 🎯**If you find our repository useful, please cite the corresponding paper:**
 
