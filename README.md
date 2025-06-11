@@ -22,7 +22,7 @@ As AI developing for many years, institutions already have built their specific 
   author = {Jianqing Zhang, Xinghao Wu, Yanbing Zhou, Xiaoting Sun, Qiqi Cai, Yang Liu, Yang Hua, Zhenzhe Zheng, Jian Cao, Qiang Yang},
   title = {HtFLlib: A Comprehensive Heterogeneous Federated Learning Library and Benchmark},
   year = {2025},
-  booktitle = {Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining}
+  booktitle = {Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining}
 }
 
 @article{zhang2025pfllib,
