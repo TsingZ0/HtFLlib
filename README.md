@@ -14,6 +14,7 @@ As AI developing for many years, institutions already have built their specific 
 - **10** data-free HtFL algorithms.
 - [PFLlib](https://github.com/TsingZ0/PFLlib) compatible.
 - Pre-trained model support.
+- Real-machine deployment: [HtFL-OnDevice](https://github.com/TsingZ0//HtFL-OnDevice).
 
 🎯**If you find our repository useful, please cite the corresponding paper:**
 
