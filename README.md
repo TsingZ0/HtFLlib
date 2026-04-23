@@ -68,6 +68,7 @@ Here, "data-free" refers to the absence of any additional dataset beyond the cli
 - **FedTGP** — [FedTGP: Trainable Global Prototypes with Adaptive-Margin-Enhanced Contrastive Learning for Data and Model Heterogeneity in Federated Learning](https://arxiv.org/abs/2401.03230) *AAAI 2024*
 - **FedKTL** — [An Upload-Efficient Scheme for Transferring Knowledge From a Server-Side Pre-trained Generator to Clients in Heterogeneous Federated Learning](https://arxiv.org/abs/2403.15760) *CVPR 2024* *(Note: FedKTL requires pre-trained generators to run, please refer to its [project page](https://github.com/TsingZ0/FedKTL) for download links.)*
 - **FedMRL** — [Federated Model Heterogeneous Matryoshka Representation Learning](https://arxiv.org/abs/2406.00488) *NeurIPS 2024*
+- **FedL2G** — [Adaptive Guidance for Local Training in Heterogeneous Federated Learning](https://arxiv.org/pdf/2410.06490)
 
 ## Experimental results
 
