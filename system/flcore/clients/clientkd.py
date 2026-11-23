@@ -159,7 +159,7 @@ def decomposition(param_iter, energy):
                 u = np.transpose(u, (2, 3, 0, 1))
                 sigma = np.transpose(sigma, (2, 0, 1))
                 v = np.transpose(v, (2, 3, 0, 1))
-            threshold=0
+            threshold=len(sigma)  # keep all singular values if no shorter prefix reaches the energy
             if np.sum(np.square(sigma))==0:
                 compressed_param_cpu=param_cpu
             else:
